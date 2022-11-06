@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ParallelDataFetch {
-    private static ExecutorService es = Executors.newFixedThreadPool(2);
+    private static ExecutorService es = Executors.newCachedThreadPool();
     static String API_KEY_OMDB = "52e5ff12";
     static String API_KEY_NY = "5QjomAGUzfEYR3EdFfcVYCuHAYLAG0FK";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

@@ -2,7 +2,8 @@
 // TODO - INSTRUCTIONS
 
 
-
+/api/movie/seq/{name}
+/api/movie/par/{name}
 
 
 
