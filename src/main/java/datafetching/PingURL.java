@@ -1,4 +1,4 @@
-package parallel;
+package datafetching;
 
 import java.net.HttpURLConnection;
 import java.net.URL;

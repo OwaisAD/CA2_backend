@@ -1,19 +1,15 @@
-package parallel;
+package datafetching;
 
 import com.google.gson.*;
-import com.nimbusds.jose.shaded.json.JSONArray;
 import dtos.MovieDTO;
 import dtos.MovieReviewCombinedDTO;
 import dtos.ReviewDTO;
 import utils.HttpUtils;
 
-import javax.json.Json;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 
-public class MovieReviewDataFetcher {
+public class SequentialDataFetch {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -49,7 +45,4 @@ public class MovieReviewDataFetcher {
         return movieReviewCombinedDTO;
     }
 
-//    public static MovieReviewCombinedDTO runParallel(String movieName) {
-//
-//    }
 }
