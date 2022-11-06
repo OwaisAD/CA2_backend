@@ -117,6 +117,12 @@
             <artifactId>properties-maven-plugin</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.grizzly</groupId>
+            <artifactId>grizzly-http</artifactId>
+            <version>2.4.4</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 
