@@ -3,14 +3,7 @@ package entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.mindrot.jbcrypt.BCrypt;
@@ -21,7 +14,10 @@ public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
   @Id
-  @Basic(optional = false)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", nullable = false)
+  private Integer id;
+
   @NotNull
   @Column(name = "user_name", length = 25)
   private String userName;
@@ -30,9 +26,15 @@ public class User implements Serializable {
   @Size(min = 1, max = 255)
   @Column(name = "user_pass")
   private String userPass;
+
+
+  @NotNull
+  @Column(name = "age")
+  private Integer age;
+
   @JoinTable(name = "user_roles", joinColumns = {
-    @JoinColumn(name = "user_name", referencedColumnName = "user_name")}, inverseJoinColumns = {
-    @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
+          @JoinColumn(name = "user_name", referencedColumnName = "user_name")}, inverseJoinColumns = {
+          @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
   @ManyToMany
   private List<Role> roleList = new ArrayList<>();
 
@@ -42,24 +44,31 @@ public class User implements Serializable {
     }
     List<String> rolesAsStrings = new ArrayList<>();
     roleList.forEach((role) -> {
-        rolesAsStrings.add(role.getRoleName());
-      });
+      rolesAsStrings.add(role.getRoleName());
+    });
     return rolesAsStrings;
   }
 
   public User() {}
 
   //TODO Change when password is hashed
-   public boolean verifyPassword(String pw){
-      return BCrypt.checkpw(pw, userPass);
-      //return(pw.equals(userPass));
-    }
+  public boolean verifyPassword(String pw){
+    return BCrypt.checkpw(pw, userPass);
+    //return(pw.equals(userPass));
+  }
 
   public User(String userName, String userPass) {
     this.userName = userName;
     this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
   }
 
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
   public String getUserName() {
     return userName;
