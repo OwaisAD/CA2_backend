@@ -27,16 +27,22 @@ public class User implements Serializable {
   @Column(name = "user_pass")
   private String userPass;
 
-
   @NotNull
   @Column(name = "age")
   private Integer age;
 
-  @JoinTable(name = "user_roles", joinColumns = {
-          @JoinColumn(name = "user_name", referencedColumnName = "user_name")}, inverseJoinColumns = {
-          @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
   @ManyToMany
+  @JoinTable(name = "user_roles", joinColumns = {
+          @JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {
+          @JoinColumn(name = "role_id", referencedColumnName = "id")})
   private List<Role> roleList = new ArrayList<>();
+
+
+  @ManyToMany(cascade = CascadeType.PERSIST)
+  @JoinTable(name = "user_movie",
+          joinColumns = @JoinColumn(name = "movie_id"),
+          inverseJoinColumns = @JoinColumn(name = "user_id"))
+  private List<Movie> movies = new ArrayList<>();
 
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
@@ -60,6 +66,12 @@ public class User implements Serializable {
   public User(String userName, String userPass) {
     this.userName = userName;
     this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
+  }
+
+  public User(String userName, String userPass, int age) {
+    this.userName = userName;
+    this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
+    this.age = age;
   }
 
   public Integer getId() {
@@ -98,4 +110,11 @@ public class User implements Serializable {
     roleList.add(userRole);
   }
 
+  public Integer getAge() {
+    return age;
+  }
+
+  public void setAge(Integer age) {
+    this.age = age;
+  }
 }
