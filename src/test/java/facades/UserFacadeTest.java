@@ -3,6 +3,8 @@ package facades;
 import TestEnvironment.TestEnvironment;
 import entities.User;
 import errorhandling.IllegalAgeException;
+import errorhandling.InvalidUsernameException;
+import errorhandling.MissingDataException;
 import utils.EMF_Creator;
 import entities.RenameMe;
 import javax.persistence.EntityManager;
@@ -44,31 +46,78 @@ public class UserFacadeTest extends TestEnvironment {
     }
 
     @Test
-    public void createUserWithAgeUnder13Test() {
+    public void createUserWithAgeBelowMinimumTest() {
         User user = createUser();
         user.setAge(12);
         assertThrows(IllegalAgeException.class, () -> facade.createUser(user));
     }
 
     @Test
-    public void createUserWithAgeAbove120Test() {
+    public void createUserWithAgeAboveMaximumTest() {
         User user = createUser();
         user.setAge(121);
         assertThrows(IllegalAgeException.class, () -> facade.createUser(user));
     }
 
     @Test
-    public void createUserWithAge13Test() {
+    public void createUserWithExactlyTheMinimumAgeTest() {
         User user = createUser();
         user.setAge(13);
         assertDoesNotThrow(() -> facade.createUser(user));
     }
 
     @Test
-    public void createUserWithAge120Test() {
+    public void createUserWithExactlyTheMaximumAgeTest() {
         User user = createUser();
         user.setAge(120);
         assertDoesNotThrow(() -> facade.createUser(user));
+    }
+
+    @Test
+    public void createUserWithNullUsernameTest() {
+        User user = createUser();
+        user.setUsername(null);
+        assertThrows(InvalidUsernameException.class, () -> facade.createUser(user));
+    }
+
+    @Test
+    public void createUserWithEmptyUsernameTest() {
+        User user = createUser();
+        user.setUsername("");
+        assertThrows(InvalidUsernameException.class, () -> facade.createUser(user));
+    }
+
+    @Test
+    public void createUserWithUsernameLengthBelowMinimumLengthTest() {
+        User user = createUser();
+        user.setUsername(faker.letterify("??")); //two random characters
+        assertThrows(InvalidUsernameException.class, () -> facade.createUser(user));
+    }
+
+    @Test
+    public void createUserWithUsernameLengthAboveMaximumLengthTest() {
+        User user = createUser();
+        user.setUsername(faker.letterify("?????????????????????"));
+        assertThrows(InvalidUsernameException.class, () -> facade.createUser(user));
+    }
+
+    @Test
+    public void createUserWithUsernameLengthExactlyMinimumLengthTest() {
+        User user = createUser();
+        user.setUsername(faker.letterify("???"));
+        assertDoesNotThrow(() -> facade.createUser(user));
+    }
+
+    @Test
+    public void createUserWithUsernameLengthExactlyMaximumLengthTest() {
+        User user = createUser();
+        user.setUsername(faker.letterify("????????????????????"));
+        assertDoesNotThrow(() -> facade.createUser(user));
+    }
+
+    @Test
+    public void createUserWhenUserIsNullTest() {
+        assertThrows(MissingDataException.class, () -> facade.createUser(null));
     }
 
 }

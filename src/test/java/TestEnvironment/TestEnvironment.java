@@ -59,11 +59,16 @@ public class TestEnvironment {
     }
 
     protected User createUser() {
-        return new User(
-                faker.name().username(),
-                faker.internet().password(),
-                faker.number().numberBetween(13, 115)
-        );
+        try {
+            return new User(
+                    faker.name().username(),
+                    faker.internet().password(),
+                    faker.number().numberBetween(13, 120)
+            );
+        } catch (Exception e) {
+            System.out.println("Exception: " + e);
+        }
+        return null;
     }
 
     protected void assertDatabaseHasEntity(Entity entity, int id) {

@@ -3,6 +3,7 @@ package rest;
 import entities.User;
 import entities.Role;
 
+import errorhandling.InvalidPasswordException;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
@@ -85,6 +86,8 @@ public class LoginEndpointTest {
             em.persist(both);
             //System.out.println("Saved test data to database");
             em.getTransaction().commit();
+        } catch (InvalidPasswordException e) {
+            throw new RuntimeException(e);
         } finally {
             em.close();
         }

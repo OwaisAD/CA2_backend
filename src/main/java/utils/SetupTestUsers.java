@@ -3,13 +3,14 @@ package utils;
 
 import entities.Role;
 import entities.User;
+import errorhandling.InvalidPasswordException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 public class SetupTestUsers {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws InvalidPasswordException {
 
     EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
     EntityManager em = emf.createEntityManager();

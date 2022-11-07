@@ -5,6 +5,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import errorhandling.IllegalAgeException;
+import errorhandling.InvalidUsernameException;
+import errorhandling.MissingDataException;
 import security.errorhandling.AuthenticationException;
 
 /**
@@ -49,11 +51,23 @@ public class UserFacade {
     }
 
 
-    public User createUser(User user) throws IllegalAgeException {
+    public User createUser(User user) throws IllegalAgeException, MissingDataException, InvalidUsernameException {
         EntityManager em = emf.createEntityManager();
 
-        if(user != null && (user.getAge() < MINIMUM_AGE || user.getAge() > MAXIMUM_AGE)) {
+        if(user == null) {
+            throw new MissingDataException("User is null");
+        }
+
+        if(user.getAge() < MINIMUM_AGE || user.getAge() > MAXIMUM_AGE) {
             throw new IllegalAgeException(user.getAge());
+        }
+
+        if(user.getUsername() == null || user.getUsername().equals("")) {
+            throw new InvalidUsernameException("Username cannot be null or an empty string");
+        }
+
+        if(user.getUsername().length() < 3 || user.getUsername().length() > 20) {
+            throw new InvalidUsernameException("Username length should be between 3 and 20 characters");
         }
 
         try {

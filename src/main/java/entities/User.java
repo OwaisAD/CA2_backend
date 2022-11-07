@@ -7,11 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import errorhandling.InvalidPasswordException;
 import org.mindrot.jbcrypt.BCrypt;
 
 @Entity
 @Table(name = "users")
 public class User implements Serializable, entities.Entity{
+
+  public static final int MINIMUM_PASSWORD_LENGTH = 4;
 
   private static final long serialVersionUID = 1L;
   @Id
@@ -64,14 +68,23 @@ public class User implements Serializable, entities.Entity{
     //return(pw.equals(userPass));
   }
 
-  public User(String username, String password) {
-    this.username = username;
-    this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+  private String validateAndHashPassword(String password) throws InvalidPasswordException {
+      //check if empty or null?
+
+      if(password.length() < MINIMUM_PASSWORD_LENGTH) {
+        throw new InvalidPasswordException("Password is too short");
+      }
+      return BCrypt.hashpw(password, BCrypt.gensalt());
   }
 
-  public User(String username, String password, int age) {
+  public User(String username, String password) throws InvalidPasswordException {
     this.username = username;
-    this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+    this.password = validateAndHashPassword(password);
+  }
+
+  public User(String username, String password, int age) throws InvalidPasswordException {
+    this.username = username;
+    this.password = validateAndHashPassword(password);
     this.age = age;
   }
 
@@ -93,10 +106,6 @@ public class User implements Serializable, entities.Entity{
 
   public String getPassword() {
     return this.password;
-  }
-
-  public void setPassword(String userPass) {
-    this.password = userPass;
   }
 
   public List<Role> getRoleList() {
