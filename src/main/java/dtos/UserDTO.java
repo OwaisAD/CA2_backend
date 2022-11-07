@@ -3,11 +3,11 @@ package dtos;
 import entities.User;
 
 public class UserDTO {
-    private int id;
+    private Integer id;
     private String username;
 
     private String password;
-    private int age;
+    private Integer age;
 
 
 
@@ -18,7 +18,7 @@ public class UserDTO {
         this.age = user.getAge();
     }
 
-    public UserDTO(int id, String username, int age) {
+    public UserDTO(Integer id, String username, Integer age) {
         this.id = id;
         this.username = username;
         this.age = age;
@@ -35,4 +35,21 @@ public class UserDTO {
     public int getAge() {
         return age;
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+
+
 }

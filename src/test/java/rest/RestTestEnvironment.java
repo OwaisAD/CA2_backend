@@ -3,6 +3,8 @@ package rest;
 import TestEnvironment.TestEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dtos.UserDTO;
+import entities.User;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -46,5 +48,13 @@ public class RestTestEnvironment extends TestEnvironment {
     public static void closeTestServer() {
         EMF_Creator.endREST_TestWithDB();
         httpServer.shutdownNow();
+    }
+
+    protected UserDTO createUserDTO() {
+        User user = createUser();
+        UserDTO userDTO = new UserDTO(user);
+        userDTO.setPassword(faker.letterify("????"));
+
+        return new UserDTO(user);
     }
 }

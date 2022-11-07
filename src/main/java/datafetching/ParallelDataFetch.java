@@ -25,7 +25,8 @@ public class ParallelDataFetch {
     // add movie future
     public static Future<MovieDTO> getMovie(String movieName) {
         return es.submit(() -> {
-            String movieJSON = HttpUtils.fetchData("https://www.omdbapi.com/?apikey=" + API_KEY_OMDB +"&t=" + movieName);
+            String movieJSON = HttpUtils.fetchData("https://www.omdbapi.com/?apikey="
+                    + API_KEY_OMDB +"&t=" + movieName);
             MovieDTO movieDTO = GSON.fromJson(movieJSON, MovieDTO.class);
             movieDTO.setDataReference("https://omdbapi.com/");
             return movieDTO;
@@ -35,7 +36,9 @@ public class ParallelDataFetch {
     // add review future
     public static Future<ReviewDTO> getReview(String movieName) {
         return es.submit(() -> {
-            String reviewJSON = HttpUtils.fetchData("https://api.nytimes.com/svc/movies/v2/reviews/search.json?query=" + movieName + "&api-key=" + API_KEY_NY);
+            String reviewJSON = HttpUtils.fetchData("https://api.nytimes.com/svc/movies/v2/reviews/search.json?query="
+                    + movieName + "&api-key=" + API_KEY_NY);
+            //Change to DTO not JsonObject
             JsonObject reviewJSON2 = GSON.fromJson(reviewJSON, JsonObject.class);
             JsonArray jsonArray = reviewJSON2.getAsJsonArray("results");
 
@@ -54,8 +57,11 @@ public class ParallelDataFetch {
 
     // method to get both
     public static MovieReviewCombinedDTO runParallel(String movieName) throws ExecutionException, InterruptedException {
-        MovieDTO movieDTO = getMovie(movieName).get();
-        ReviewDTO reviewDTO = getReview(movieName).get();
+       //Start both tasks before waiting
+        Future<MovieDTO> futureMovieDTO = getMovie(movieName);
+        Future<ReviewDTO> futureReviewDTO = getReview(movieName);
+        MovieDTO movieDTO = futureMovieDTO.get();
+        ReviewDTO reviewDTO = futureReviewDTO.get();
         MovieReviewCombinedDTO movieReviewCombinedDTO = new MovieReviewCombinedDTO(movieDTO, reviewDTO);
         return movieReviewCombinedDTO;
     }

@@ -43,6 +43,7 @@ public class User implements Serializable, entities.Entity{
   private List<Role> roleList = new ArrayList<>();
 
 
+
   @ManyToMany(cascade = CascadeType.PERSIST)
   @JoinTable(name = "user_movie",
           joinColumns = @JoinColumn(name = "movie_id"),

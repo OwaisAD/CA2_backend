@@ -4,16 +4,8 @@ import TestEnvironment.TestEnvironment;
 import entities.User;
 import errorhandling.IllegalAgeException;
 import errorhandling.InvalidUsernameException;
-import errorhandling.MissingDataException;
-import utils.EMF_Creator;
-import entities.RenameMe;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -117,7 +109,7 @@ public class UserFacadeTest extends TestEnvironment {
 
     @Test
     public void createUserWhenUserIsNullTest() {
-        assertThrows(MissingDataException.class, () -> facade.createUser(null));
+        assertThrows(NullPointerException.class, () -> facade.createUser(null));
     }
 
 }

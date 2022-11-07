@@ -5,9 +5,12 @@
  */
 package facades;
 
-import dtos.RenameMeDTO;
-import entities.RenameMe;
 import javax.persistence.EntityManagerFactory;
+
+import entities.User;
+import errorhandling.IllegalAgeException;
+import errorhandling.InvalidPasswordException;
+import errorhandling.InvalidUsernameException;
 import utils.EMF_Creator;
 
 /**
@@ -15,15 +18,16 @@ import utils.EMF_Creator;
  * @author tha
  */
 public class Populator {
-    public static void populate(){
+    public static void populate() throws InvalidPasswordException, InvalidUsernameException, IllegalAgeException {
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
-        FacadeExample fe = FacadeExample.getFacadeExample(emf);
-        fe.create(new RenameMeDTO(new RenameMe("First 1", "Last 1")));
-        fe.create(new RenameMeDTO(new RenameMe("First 2", "Last 2")));
-        fe.create(new RenameMeDTO(new RenameMe("First 3", "Last 3")));
+        UserFacade userFacade = UserFacade.getUserFacade(emf);
+        userFacade.createUser(new User("owais","1234",26));
+        userFacade.createUser(new User("daniel","1234",26));
+        userFacade.createUser(new User("andreas","1234",23));
+        userFacade.createUser(new User("thomas","1234",36));
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidPasswordException, InvalidUsernameException, IllegalAgeException {
         populate();
     }
 }

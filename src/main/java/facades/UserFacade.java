@@ -54,12 +54,8 @@ public class UserFacade {
     }
 
 
-    public User createUser(User user) throws IllegalAgeException, MissingDataException, InvalidUsernameException {
+    public User createUser(User user) throws IllegalAgeException, InvalidUsernameException {
         EntityManager em = emf.createEntityManager();
-
-        if(user == null) {
-            throw new MissingDataException("User is null");
-        }
 
         if(user.getAge() < MINIMUM_AGE || user.getAge() > MAXIMUM_AGE) {
             throw new IllegalAgeException(user.getAge());

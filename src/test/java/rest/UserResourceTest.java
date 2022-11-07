@@ -1,7 +1,9 @@
 package rest;
 
+import dtos.UserDTO;
 import entities.User;
 import io.restassured.http.ContentType;
+import org.glassfish.grizzly.http.util.HttpStatus;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -14,42 +16,81 @@ public class UserResourceTest extends RestTestEnvironment {
 
     @Test
     void createUserTest() {
-        User user = createUser();
+        UserDTO userDTO = createUserDTO();
 
         int id = given()
                 .header("Content-type", ContentType.JSON)
                 .and()
-                .body(GSON.toJson(user))
+                .body(GSON.toJson(userDTO))
                 .when()
                 .post(BASE_URL)
                 .then()
                 .assertThat()
-                .statusCode(201)
+                .statusCode(HttpStatus.CREATED_201.getStatusCode())
                 .contentType(ContentType.JSON)
-                .body("username", equalTo(user.getUsername()))
-                .body("age", equalTo(user.getAge()))
+                .body("username", equalTo(userDTO.getUsername()))
+                .body("age", equalTo(userDTO.getAge()))
                 .body("id", notNullValue())
                 .extract().path("id");
 
-        assertDatabaseHasEntity(user, id);
+        assertDatabaseHasEntity(new User(), id);
     }
 
     @Test
     void createUserInvalidUsernameTest() {
-        User user = createUser();
-        user.setUsername(faker.letterify("??"));
+        UserDTO userDTO = createUserDTO();
+        userDTO.setUsername(faker.letterify("??"));
 
         given()
                 .header("Content-type", ContentType.JSON)
                 .and()
-                .body(GSON.toJson(user))
+                .body(GSON.toJson(userDTO))
                 .when()
                 .post(BASE_URL)
                 .then()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
                 .contentType(ContentType.JSON)
                 .body("message", notNullValue());
+
+    }
+
+    @Test
+    void createUserInvalidPasswordTest() {
+        UserDTO userDTO = createUserDTO();
+        userDTO.setPassword(faker.letterify("??"));
+
+        given()
+                .header("Content-type", ContentType.JSON)
+                .and()
+                .body(GSON.toJson(userDTO))
+                .when()
+                .post(BASE_URL)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("message",notNullValue());
+
+    }
+
+    @Test
+    void createUserIllegalAgeTest() {
+        UserDTO userDTO = createUserDTO();
+        userDTO.setAge(faker.random().nextInt(121,300));
+
+        given()
+                .header("Content-type", ContentType.JSON)
+                .and()
+                .body(GSON.toJson(userDTO))
+                .when()
+                .post(BASE_URL)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("message",notNullValue());
+
     }
 
 }
