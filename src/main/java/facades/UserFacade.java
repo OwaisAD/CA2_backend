@@ -20,6 +20,9 @@ public class UserFacade {
     public static final int MINIMUM_AGE = 13;
     public static final int MAXIMUM_AGE = 120;
 
+    public static final int MINIMUM_USERNAME_LENGTH = 3;
+    public static final int MAXIMUM_USERNAME_LENGTH = 20;
+
     private UserFacade() {
     }
 

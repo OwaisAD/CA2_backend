@@ -34,4 +34,22 @@ public class UserResourceTest extends RestTestEnvironment {
         assertDatabaseHasEntity(user, id);
     }
 
+    @Test
+    void createUserInvalidUsernameTest() {
+        User user = createUser();
+        user.setUsername(faker.letterify("??"));
+
+        given()
+                .header("Content-type", ContentType.JSON)
+                .and()
+                .body(GSON.toJson(user))
+                .when()
+                .post(BASE_URL)
+                .then()
+                .assertThat()
+                .statusCode(400)
+                .contentType(ContentType.JSON)
+                .body("message", notNullValue());
+    }
+
 }

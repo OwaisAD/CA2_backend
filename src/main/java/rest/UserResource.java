@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dtos.UserDTO;
 import entities.User;
-import errorhandling.IllegalAgeException;
-import errorhandling.InvalidUsernameException;
-import errorhandling.MissingDataException;
+import errorhandling.*;
 import facades.UserFacade;
 import utils.EMF_Creator;
 
@@ -31,19 +29,26 @@ public class UserResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response createUser(String userFromJson) throws EntityNotFoundException, InvalidUsernameException, MissingDataException, IllegalAgeException {
+    public Response createUser(String userFromJson) throws EntityNotFoundException, InvalidPasswordException, MissingDataException, IllegalAgeException {
 
         String errorMsg = "";
+        int statusCode = 201;
+        UserDTO userDTO = GSON.fromJson(userFromJson, UserDTO.class);
+        User user = new User(userDTO.getUsername(), userDTO.getPassword(), userDTO.getAge());
 
-        // Make person from request body
-        User user = GSON.fromJson(userFromJson, User.class);
-        System.out.println(userFromJson);
+        try {
+            user = facade.createUser(user);
+        } catch (InvalidUsernameException e) {
+            statusCode = 400;
+            errorMsg = "Username length must be between "
+                    + UserFacade.MINIMUM_USERNAME_LENGTH + " and "
+                    + UserFacade.MAXIMUM_USERNAME_LENGTH +" characters long";
+            ExceptionDTO exceptionDTO = new ExceptionDTO(statusCode, errorMsg);
+            return Response.status(statusCode).entity(GSON.toJson(exceptionDTO)).build();
+        }
 
-        user = facade.createUser(user);
 
-        UserDTO userDTO = new UserDTO(user);
-
-        String result = GSON.toJson(userDTO);
-        return Response.status(201).entity(result).build();
+        String result = GSON.toJson(new UserDTO(user.getId(), user.getUsername(), user.getAge()));
+        return Response.status(statusCode).entity(result).build();
     }
 }
