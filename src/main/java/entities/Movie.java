@@ -1,5 +1,6 @@
 package entities;
 
+import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "movies")
-public class Movie {
+public class Movie implements entities.Entity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

@@ -3,6 +3,8 @@ package facades;
 import entities.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+
+import errorhandling.IllegalAgeException;
 import security.errorhandling.AuthenticationException;
 
 /**
@@ -12,6 +14,9 @@ public class UserFacade {
 
     private static EntityManagerFactory emf;
     private static UserFacade instance;
+
+    public static final int MINIMUM_AGE = 13;
+    public static final int MAXIMUM_AGE = 120;
 
     private UserFacade() {
     }
@@ -43,4 +48,21 @@ public class UserFacade {
         return user;
     }
 
+
+    public User createUser(User user) throws IllegalAgeException {
+        EntityManager em = emf.createEntityManager();
+
+        if(user != null && (user.getAge() < MINIMUM_AGE || user.getAge() > MAXIMUM_AGE)) {
+            throw new IllegalAgeException(user.getAge());
+        }
+
+        try {
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return user;
+    }
 }

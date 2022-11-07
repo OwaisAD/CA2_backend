@@ -3,6 +3,7 @@ package entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -10,7 +11,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class User implements Serializable, entities.Entity{
 
   private static final long serialVersionUID = 1L;
   @Id
@@ -19,13 +20,13 @@ public class User implements Serializable {
   private Integer id;
 
   @NotNull
-  @Column(name = "user_name", length = 25)
-  private String userName;
+  @Column(name = "username", length = 25)
+  private String username;
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 255)
-  @Column(name = "user_pass")
-  private String userPass;
+  @Column(name = "password")
+  private String password;
 
   @NotNull
   @Column(name = "age")
@@ -59,18 +60,18 @@ public class User implements Serializable {
 
   //TODO Change when password is hashed
   public boolean verifyPassword(String pw){
-    return BCrypt.checkpw(pw, userPass);
+    return BCrypt.checkpw(pw, password);
     //return(pw.equals(userPass));
   }
 
-  public User(String userName, String userPass) {
-    this.userName = userName;
-    this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
+  public User(String username, String password) {
+    this.username = username;
+    this.password = BCrypt.hashpw(password, BCrypt.gensalt());
   }
 
-  public User(String userName, String userPass, int age) {
-    this.userName = userName;
-    this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
+  public User(String username, String password, int age) {
+    this.username = username;
+    this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     this.age = age;
   }
 
@@ -82,20 +83,20 @@ public class User implements Serializable {
     this.id = id;
   }
 
-  public String getUserName() {
-    return userName;
+  public String getUsername() {
+    return username;
   }
 
-  public void setUserName(String userName) {
-    this.userName = userName;
+  public void setUsername(String userName) {
+    this.username = userName;
   }
 
-  public String getUserPass() {
-    return this.userPass;
+  public String getPassword() {
+    return this.password;
   }
 
-  public void setUserPass(String userPass) {
-    this.userPass = userPass;
+  public void setPassword(String userPass) {
+    this.password = userPass;
   }
 
   public List<Role> getRoleList() {
