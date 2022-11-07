@@ -21,7 +21,7 @@ public class MovieResource {
     @GET
     @Path("/seq/{movieName}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getMovieDataSequential(@PathParam("movieName") String movieName) throws IOException {
+    public Response getMovieDataSequential(@PathParam("movieName") String movieName) throws IOException, InterruptedException {
         LocalTime begin = LocalTime.now();
         MovieReviewCombinedDTO combined = SequentialDataFetch.runSequential(movieName);
         LocalTime end = LocalTime.now();

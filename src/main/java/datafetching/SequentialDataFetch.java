@@ -13,7 +13,7 @@ public class SequentialDataFetch {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    public static MovieReviewCombinedDTO runSequential(String movieName) throws IOException {
+    public static MovieReviewCombinedDTO runSequential(String movieName) throws IOException, InterruptedException {
         String API_KEY_OMDB = "52e5ff12";
         String API_KEY_NY = "5QjomAGUzfEYR3EdFfcVYCuHAYLAG0FK";
 

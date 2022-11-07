@@ -20,7 +20,6 @@ public class ParallelDataFetch {
     static String API_KEY_NY = "5QjomAGUzfEYR3EdFfcVYCuHAYLAG0FK";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-
     //using threads based on: https://www.baeldung.com/java-future
 
     // add movie future
@@ -49,7 +48,6 @@ public class ParallelDataFetch {
 
             ReviewDTO reviewDTO = new ReviewDTO(summary_short, suggested_link_text, review_url);
             reviewDTO.setReviewReference("https://www.nytimes.com/");
-
             return reviewDTO;
         });
     }
