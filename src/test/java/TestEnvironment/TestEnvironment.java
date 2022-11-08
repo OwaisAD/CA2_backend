@@ -86,11 +86,21 @@ public class TestEnvironment {
         return new Role(faker.letterify("????"));
     }
 
+    protected Movie createAndPersistMovie(){
+
+        Movie movie = createMovie();
+        return (Movie) persist(movie);
+    }
+
+    protected Movie createMovie(){
+        return new Movie(faker.book().title(), faker.number().numberBetween(1888, 2030));
+    }
+
     protected void assertDatabaseHasEntity(Entity entity, int id) {
         EntityManager em = emf.createEntityManager();
         try {
             entity = em.find(entity.getClass(), id);
-            assertNotNull(entity, "Entity: " + entity.getClass()+" with id: " + id + "does not exist..");
+            assertNotNull(entity, "Entity: " + entity.getClass()+" with id: " + id + " does not exist..");
         } finally {
             em.close();
         }
@@ -100,9 +110,13 @@ public class TestEnvironment {
         EntityManager em = emf.createEntityManager();
         try {
             Entity foundEntity = em.find(entity.getClass(), id);
-            assertNull(foundEntity, "Entity: " + entity.getClass()+" with id: " + id + "does exist!");
+            assertNull(foundEntity, "Entity: " + entity.getClass()+" with id: " + id + " does exist!");
         } finally {
             em.close();
         }
     }
+
+
+
+
 }
