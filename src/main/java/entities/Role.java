@@ -24,7 +24,7 @@ public class Role implements Serializable, entities.Entity {
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "role_name", length = 20)
+    @Column(name = "role", length = 20)
     private String roleName;
 
 
@@ -33,7 +33,6 @@ public class Role implements Serializable, entities.Entity {
 
     public Role() {
     }
-
 
     public Integer getId() {
         return id;

@@ -24,7 +24,7 @@ public class User implements Serializable, entities.Entity{
   private Integer id;
 
   @NotNull
-  @Column(name = "username", length = 25)
+  @Column(name = "username", length = 25, unique = true)
   private String username;
   @Basic(optional = false)
   @NotNull
