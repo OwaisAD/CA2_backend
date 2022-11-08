@@ -71,6 +71,15 @@ public class TestEnvironment {
         return null;
     }
 
+    protected Role createAndPersistRole() {
+        Role role = createRole();
+        return (Role) persist(role);
+    }
+
+    protected Role createRole() {
+        return new Role(faker.letterify("????"));
+    }
+
     protected void assertDatabaseHasEntity(Entity entity, int id) {
         EntityManager em = emf.createEntityManager();
         try {
