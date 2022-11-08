@@ -17,12 +17,12 @@ class MovieReviewCombinedDTOs {
 }
 
 public class MovieReviewCombinedDTO {
-    private MovieDTO movie;
+    private MovieDTOFromOMDB movie;
     private ReviewDTO review;
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    public MovieReviewCombinedDTO(MovieDTO movie, ReviewDTO review) {
+    public MovieReviewCombinedDTO(MovieDTOFromOMDB movie, ReviewDTO review) {
         this.movie = movie;
         this.review = review;
     }
@@ -31,11 +31,11 @@ public class MovieReviewCombinedDTO {
         return GSON.toJson(new MovieReviewCombinedDTOs(title, time, movieData));
     }
 
-    public MovieDTO getMovie() {
+    public MovieDTOFromOMDB getMovie() {
         return movie;
     }
 
-    public void setMovie(MovieDTO movie) {
+    public void setMovie(MovieDTOFromOMDB movie) {
         this.movie = movie;
     }
 

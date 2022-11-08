@@ -40,9 +40,7 @@ public class User implements Serializable, entities.Entity{
   @JoinTable(name = "user_roles", joinColumns = {
           @JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {
           @JoinColumn(name = "role_id", referencedColumnName = "id")})
-  private List<Role> roleList = new ArrayList<>();
-
-
+  private List<Role> roles = new ArrayList<>();
 
   @ManyToMany(cascade = CascadeType.PERSIST)
   @JoinTable(name = "user_movie",
@@ -50,12 +48,15 @@ public class User implements Serializable, entities.Entity{
           inverseJoinColumns = @JoinColumn(name = "user_id"))
   private List<Movie> movies = new ArrayList<>();
 
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+  private List<UserMovie> userMovies = new ArrayList<>();
+
   public List<String> getRolesAsStrings() {
-    if (roleList.isEmpty()) {
+    if (roles.isEmpty()) {
       return null;
     }
     List<String> rolesAsStrings = new ArrayList<>();
-    roleList.forEach((role) -> {
+    roles.forEach((role) -> {
       rolesAsStrings.add(role.getRole());
     });
     return rolesAsStrings;
@@ -109,23 +110,35 @@ public class User implements Serializable, entities.Entity{
     return this.password;
   }
 
-  public List<Role> getRoleList() {
-    return roleList;
-  }
-
-  public void setRoleList(List<Role> roleList) {
-    this.roleList = roleList;
-  }
-
-  public void addRole(Role userRole) {
-    roleList.add(userRole);
-  }
-
   public Integer getAge() {
     return age;
   }
 
   public void setAge(Integer age) {
     this.age = age;
+  }
+
+  public List<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Role> roles) {
+    this.roles = roles;
+  }
+
+  public void addRole(Role role) {
+    roles.add(role);
+  }
+
+  public List<Movie> getMovies() {
+    return movies;
+  }
+
+  public void addMovie(Movie movie) {
+    movies.add(movie);
+  }
+
+  public List<UserMovie> getUserMovies() {
+    return userMovies;
   }
 }

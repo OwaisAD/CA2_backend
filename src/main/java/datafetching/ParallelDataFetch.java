@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dtos.MovieDTO;
+import dtos.MovieDTOFromOMDB;
 import dtos.MovieReviewCombinedDTO;
 import dtos.ReviewDTO;
 import utils.HttpUtils;
@@ -23,13 +23,13 @@ public class ParallelDataFetch {
     //using threads based on: https://www.baeldung.com/java-future
 
     // add movie future
-    public static Future<MovieDTO> getMovie(String movieName) {
+    public static Future<MovieDTOFromOMDB> getMovie(String movieName) {
         return es.submit(() -> {
             String movieJSON = HttpUtils.fetchData("https://www.omdbapi.com/?apikey="
                     + API_KEY_OMDB +"&t=" + movieName);
-            MovieDTO movieDTO = GSON.fromJson(movieJSON, MovieDTO.class);
-            movieDTO.setDataReference("https://omdbapi.com/");
-            return movieDTO;
+            MovieDTOFromOMDB movieDTOFromOMDB = GSON.fromJson(movieJSON, MovieDTOFromOMDB.class);
+            movieDTOFromOMDB.setDataReference("https://omdbapi.com/");
+            return movieDTOFromOMDB;
         });
     }
 
@@ -58,11 +58,11 @@ public class ParallelDataFetch {
     // method to get both
     public static MovieReviewCombinedDTO runParallel(String movieName) throws ExecutionException, InterruptedException {
        //Start both tasks before waiting
-        Future<MovieDTO> futureMovieDTO = getMovie(movieName);
+        Future<MovieDTOFromOMDB> futureMovieDTO = getMovie(movieName);
         Future<ReviewDTO> futureReviewDTO = getReview(movieName);
-        MovieDTO movieDTO = futureMovieDTO.get();
+        MovieDTOFromOMDB movieDTOFromOMDB = futureMovieDTO.get();
         ReviewDTO reviewDTO = futureReviewDTO.get();
-        MovieReviewCombinedDTO movieReviewCombinedDTO = new MovieReviewCombinedDTO(movieDTO, reviewDTO);
+        MovieReviewCombinedDTO movieReviewCombinedDTO = new MovieReviewCombinedDTO(movieDTOFromOMDB, reviewDTO);
         return movieReviewCombinedDTO;
     }
 }

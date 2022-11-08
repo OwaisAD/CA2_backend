@@ -1,7 +1,7 @@
 package datafetching;
 
 import com.google.gson.*;
-import dtos.MovieDTO;
+import dtos.MovieDTOFromOMDB;
 import dtos.MovieReviewCombinedDTO;
 import dtos.ReviewDTO;
 import utils.HttpUtils;
@@ -19,10 +19,10 @@ public class SequentialDataFetch {
 
         // get movie data
         String movieJSON = HttpUtils.fetchData("https://www.omdbapi.com/?apikey=" + API_KEY_OMDB +"&t=" + movieName);
-        MovieDTO movieDTO = GSON.fromJson(movieJSON, MovieDTO.class);
-        movieDTO.setDataReference("https://omdbapi.com/");
+        MovieDTOFromOMDB movieDTOFromOMDB = GSON.fromJson(movieJSON, MovieDTOFromOMDB.class);
+        movieDTOFromOMDB.setDataReference("https://omdbapi.com/");
 
-        String openingYear = movieDTO.getYear();
+        String openingYear = movieDTOFromOMDB.getYear();
         String openingYearPlusOne = String.valueOf(Integer.parseInt(openingYear) + 1);
 
         // get review data
@@ -41,7 +41,7 @@ public class SequentialDataFetch {
         ReviewDTO reviewDTO = new ReviewDTO(summary_short, suggested_link_text, review_url);
         reviewDTO.setReviewReference("https://www.nytimes.com/");
 
-        MovieReviewCombinedDTO movieReviewCombinedDTO = new MovieReviewCombinedDTO(movieDTO, reviewDTO);
+        MovieReviewCombinedDTO movieReviewCombinedDTO = new MovieReviewCombinedDTO(movieDTOFromOMDB, reviewDTO);
         return movieReviewCombinedDTO;
     }
 

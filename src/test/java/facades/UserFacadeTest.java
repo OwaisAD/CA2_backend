@@ -1,12 +1,16 @@
 package facades;
 
 import TestEnvironment.TestEnvironment;
+import entities.Movie;
 import entities.User;
+import entities.UserMovie;
 import errorhandling.IllegalAgeException;
 import errorhandling.InvalidUsernameException;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import javax.persistence.EntityNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -110,6 +114,44 @@ public class UserFacadeTest extends TestEnvironment {
     @Test
     public void createUserWhenUserIsNullTest() {
         assertThrows(NullPointerException.class, () -> facade.createUser(null));
+    }
+
+    @Test
+    public void updateUserTest() {
+        User user = createAndPersistUser();
+        user.setAge(faker.number().numberBetween(13,120));
+
+        facade.updateUser(user);
+
+        assertDatabaseHasEntityWith(user,"age",user.getAge());
+    }
+
+    @Test
+    public void updateUserWithANewMovieTest() {
+        User user = createAndPersistUser();
+        Movie movie = createAndPersistMovie();
+
+        user.addMovie(movie);
+        facade.updateUser(user);
+//        user = facade.getUserById(user.getId());
+//        assertEquals(1,user.getUserMovies().size());
+//
+//        UserMovie userMovie = user.getUserMovies().get(0);
+//        assertDatabaseHasEntity(userMovie,userMovie.getId()); //Check if the relation exists in database
+    }
+
+    @Test
+    public void getUserByIdTest() {
+        User expected = createAndPersistUser();
+
+        User actual = facade.getUserById(expected.getId());
+
+        assertEquals(expected.getId(),actual.getId());
+    }
+
+    @Test
+    public void getUserByNonExistingIdTest() {
+        assertThrows(EntityNotFoundException.class,()-> facade.getUserById(nonExistingId));
     }
 
 }

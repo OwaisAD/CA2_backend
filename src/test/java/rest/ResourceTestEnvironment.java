@@ -3,7 +3,10 @@ package rest;
 import TestEnvironment.TestEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dtos.MovieDTO;
+import dtos.MovieDTOFromOMDB;
 import dtos.UserDTO;
+import entities.Movie;
 import entities.User;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
@@ -12,13 +15,12 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import utils.EMF_Creator;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
-public class RestTestEnvironment extends TestEnvironment {
+public class ResourceTestEnvironment extends TestEnvironment {
 
     protected static final int SERVER_PORT = 7777;
     protected static final String SERVER_URL = "http://localhost/api";
@@ -56,5 +58,10 @@ public class RestTestEnvironment extends TestEnvironment {
         userDTO.setPassword(faker.letterify("????"));
 
         return new UserDTO(user);
+    }
+
+    protected MovieDTO createMovieDTO() {
+        Movie movie = createMovie();
+        return new MovieDTO(movie);
     }
 }

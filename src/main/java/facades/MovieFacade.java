@@ -4,8 +4,7 @@ import entities.Movie;
 import errorhandling.IllegalAgeException;
 import errorhandling.InvalidUsernameException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import javax.persistence.*;
 
 public class MovieFacade {
 
@@ -53,6 +52,23 @@ public class MovieFacade {
             em.close();
         }
 
+    }
+
+    public Movie getMovieByTitleAndYear(String title, Integer year) {
+        EntityManager em = emf.createEntityManager();
+        Movie movie;
+        try {
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.title =:title " +
+                    "AND m.year =:year", Movie.class);
+            query.setParameter("title", title);
+            query.setParameter("year", year);
+            movie = query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } finally {
+            em.close();
+        }
+        return movie;
     }
 }
 

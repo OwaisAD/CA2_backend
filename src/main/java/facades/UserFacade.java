@@ -61,7 +61,6 @@ public class UserFacade {
         return user;
     }
 
-
     public User createUser(User user) throws IllegalAgeException, InvalidUsernameException {
         EntityManager em = emf.createEntityManager();
 
@@ -87,7 +86,24 @@ public class UserFacade {
         return user;
     }
 
+    public void updateUser(User user) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(user);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
 
-
-
+    public User getUserById(int id) {
+        EntityManager em = emf.createEntityManager();
+        User user = em.find(User.class,id);
+        em.close();
+        if (user == null) {
+            throw new EntityNotFoundException("User with id: "+id+" does not exist in database");
+        }
+        return user;
+    }
 }

@@ -27,7 +27,7 @@ public class Role implements Serializable, entities.Entity {
     private String role;
 
 
-    @ManyToMany(mappedBy = "roleList")
+    @ManyToMany(mappedBy = "roles")
     private List<User> userList;
 
     public Role() {

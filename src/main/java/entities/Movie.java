@@ -62,4 +62,11 @@ public class Movie implements entities.Entity {
         this.year = year;
     }
 
+    @Override
+    public String toString() {
+        return '{' +
+                "title='" + title + '\'' +
+                ", year=" + year +
+                '}';
+    }
 }

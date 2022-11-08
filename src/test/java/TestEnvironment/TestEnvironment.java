@@ -7,18 +7,17 @@ import org.junit.jupiter.api.BeforeEach;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestEnvironment {
 
     protected int nonExistingId;
     protected static Faker faker;
     protected static EntityManagerFactory emf;
-
-
 
     @BeforeEach
     void setup() {
@@ -116,7 +115,43 @@ public class TestEnvironment {
         }
     }
 
+    protected void assertDatabaseHasEntityWith(Entity persistedEntity, String property, int value) {
+        assertDatabaseHasEntity(persistedEntity,persistedEntity.getId());
 
+        assertDatabaseHas(persistedEntity,property,value);
+    }
 
+    protected void assertDatabaseHas(Entity persistedEntity, String property, int value) {
+        EntityManager em = emf.createEntityManager();
 
+        TypedQuery<Entity> query = em.createQuery(
+                "SELECT e FROM " + persistedEntity.getClass().getSimpleName()
+                        + " e WHERE e." + property + " = :value " +
+                        "AND e.id =:id",Entity.class);
+
+        query.setParameter("value",value);
+        query.setParameter("id",persistedEntity.getId());
+
+        try {
+            query.getSingleResult();
+            assertTrue(true);
+        } catch (Exception e) {
+            assertTrue(false,persistedEntity.getClass().getSimpleName()+" does not have "+
+                    property+" with value "+value+" in database");
+        }
+    }
+
+    protected Entity getRefreshedEntity(Entity entity) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            entity = em.find(entity.getClass(), entity.getId());
+            em.getTransaction().begin();
+            em.merge(entity);
+            em.refresh(entity);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return entity;
+    }
 }

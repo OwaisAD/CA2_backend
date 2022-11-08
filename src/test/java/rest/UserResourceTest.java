@@ -1,7 +1,10 @@
 package rest;
 
+import dtos.MovieDTO;
+import dtos.MovieDTOFromOMDB;
 import dtos.UserDTO;
 import entities.User;
+import entities.UserMovie;
 import io.restassured.http.ContentType;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.junit.jupiter.api.Test;
@@ -9,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class UserResourceTest extends RestTestEnvironment {
+public class UserResourceTest extends ResourceTestEnvironment {
 
     private final String BASE_URL = "/users/";
 
@@ -72,7 +75,6 @@ public class UserResourceTest extends RestTestEnvironment {
                 .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
                 .contentType(ContentType.JSON)
                 .body("message",notNullValue());
-
     }
 
     @Test
@@ -91,6 +93,28 @@ public class UserResourceTest extends RestTestEnvironment {
                 .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
                 .contentType(ContentType.JSON)
                 .body("message",notNullValue());
+    }
 
+    @Test
+    void addMovieToUserTest() {
+        User user = createAndPersistUser();
+        MovieDTO movieDTO = createMovieDTO();
+
+        given()
+                .header("Content-type", ContentType.JSON)
+                .and()
+                .body(GSON.toJson(movieDTO))
+                .when()
+                .put(BASE_URL+user.getId()+"/movies")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("id",equalTo(user.getId()))
+                .body("movies",hasSize(1));
+
+//        user = (User) getRefreshedEntity(user);
+//        UserMovie userMovie = user.getUserMovies().get(0);
+//        assertDatabaseHasEntity(userMovie,userMovie.getId());
     }
 }
