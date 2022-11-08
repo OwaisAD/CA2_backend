@@ -2,12 +2,16 @@ package dtos;
 
 import entities.User;
 
+import java.util.List;
+
 public class UserDTO {
     private Integer id;
     private String username;
 
     private String password;
     private Integer age;
+
+    private List<String> roles;
 
 
 
@@ -16,12 +20,14 @@ public class UserDTO {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.age = user.getAge();
+
     }
 
-    public UserDTO(Integer id, String username, Integer age) {
+    public UserDTO(Integer id, String username, Integer age, List<String> roles) {
         this.id = id;
         this.username = username;
         this.age = age;
+        this.roles = roles;
     }
 
     public String getUsername() {

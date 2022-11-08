@@ -18,6 +18,8 @@ public class TestEnvironment {
     protected static Faker faker;
     protected static EntityManagerFactory emf;
 
+
+
     @BeforeEach
     void setup() {
         nonExistingId = faker.random().nextInt(-100, 0);
@@ -29,6 +31,10 @@ public class TestEnvironment {
             em.createQuery("DELETE FROM Role").executeUpdate();
             em.createQuery("DELETE FROM Movie").executeUpdate();
             em.getTransaction().commit();
+
+            Role role = createRole();
+            role.setRole("user");
+            persist(role);
         } finally {
             em.close();
         }

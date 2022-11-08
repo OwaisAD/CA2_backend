@@ -7,8 +7,7 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class UserResourceTest extends RestTestEnvironment {
 
@@ -31,6 +30,8 @@ public class UserResourceTest extends RestTestEnvironment {
                 .body("username", equalTo(userDTO.getUsername()))
                 .body("age", equalTo(userDTO.getAge()))
                 .body("id", notNullValue())
+                .body("roles",hasSize(1))
+                .body("roles",hasItem("user"))
                 .extract().path("id");
 
         assertDatabaseHasEntity(new User(), id);
@@ -92,5 +93,4 @@ public class UserResourceTest extends RestTestEnvironment {
                 .body("message",notNullValue());
 
     }
-
 }

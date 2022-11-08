@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import dtos.UserDTO;
 import entities.User;
 import errorhandling.*;
+import facades.RoleFacade;
 import facades.UserFacade;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import utils.EMF_Creator;
@@ -23,6 +24,7 @@ public class UserResource {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
     private UserFacade facade = UserFacade.getUserFacade(emf);
+    private RoleFacade roleFacade = RoleFacade.getRoleFacade(emf);
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
@@ -34,12 +36,13 @@ public class UserResource {
 
         try {
             user = new User(userDTO.getUsername(), userDTO.getPassword(), userDTO.getAge());
+            user.addRole(roleFacade.getRoleByRole("user"));
             user = facade.createUser(user);
         } catch (InvalidUsernameException | InvalidPasswordException | IllegalAgeException  e) {
             throw new BadRequestException(e.getMessage());
         }
 
-        userDTO = new UserDTO(user.getId(), user.getUsername(), user.getAge());
+        userDTO = new UserDTO(user.getId(), user.getUsername(), user.getAge(),user.getRolesAsStrings());
         String userToJson = GSON.toJson(userDTO);
         return Response.status(HttpStatus.CREATED_201.getStatusCode()).entity(userToJson).build();
     }
