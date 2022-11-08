@@ -56,7 +56,7 @@ public class User implements Serializable, entities.Entity{
     }
     List<String> rolesAsStrings = new ArrayList<>();
     roleList.forEach((role) -> {
-      rolesAsStrings.add(role.getRoleName());
+      rolesAsStrings.add(role.getRole());
     });
     return rolesAsStrings;
   }

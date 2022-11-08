@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  *
@@ -25,7 +24,7 @@ public class Role implements Serializable, entities.Entity {
     @Basic(optional = false)
     @NotNull
     @Column(name = "role", length = 20)
-    private String roleName;
+    private String role;
 
 
     @ManyToMany(mappedBy = "roleList")
@@ -42,16 +41,16 @@ public class Role implements Serializable, entities.Entity {
         this.id = id;
     }
 
-    public Role(String roleName) {
-        this.roleName = roleName;
+    public Role(String role) {
+        this.role = role;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public List<User> getUserList() {
