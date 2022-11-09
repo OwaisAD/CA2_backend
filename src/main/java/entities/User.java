@@ -49,8 +49,8 @@ public class User implements Serializable, entities.Entity{
           inverseJoinColumns = @JoinColumn(name = "movie_id"))
   private List<Movie> movies = new ArrayList<>();
 
-//  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-//  private List<UserMovie> userMovies = new ArrayList<>();
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+  private List<UserMovie> userMovies = new ArrayList<>();
 
   public List<String> getRolesAsStrings() {
     if (roles.isEmpty()) {
@@ -142,9 +142,9 @@ public class User implements Serializable, entities.Entity{
     movies.remove(movie);
   }
 
-//  public List<UserMovie> getUserMovies() {
-//    return userMovies;
-//  }
+  public List<UserMovie> getUserMovies() {
+    return userMovies;
+  }
 
   @Override
   public boolean equals(Object o) {

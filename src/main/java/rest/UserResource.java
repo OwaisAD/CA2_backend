@@ -93,6 +93,11 @@ public class UserResource {
             user = facade.getUserById(id);
             user.removeMovie(movie);
             facade.updateUser(user);
+
+            if (movie != null && movie.getUsers().size() == 0) {
+                movieFacade.removeMovie(movie);
+            }
+
         } catch (EntityNotFoundException e) {
             throw new NotFoundException("No such user with id " + id + " exist");
         }

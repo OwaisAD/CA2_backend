@@ -63,6 +63,10 @@ public class Movie implements entities.Entity {
         this.year = year;
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
     @Override
     public String toString() {
         return '{' +

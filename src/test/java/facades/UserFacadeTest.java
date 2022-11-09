@@ -3,6 +3,7 @@ package facades;
 import TestEnvironment.TestEnvironment;
 import entities.Movie;
 import entities.User;
+import entities.UserMovie;
 import errorhandling.IllegalAgeException;
 import errorhandling.InvalidUsernameException;
 
@@ -132,11 +133,11 @@ public class UserFacadeTest extends TestEnvironment {
 
         user.addMovie(movie);
         facade.updateUser(user);
-//        user = facade.getUserById(user.getId());
-//        assertEquals(1,user.getUserMovies().size());
-//
-//        UserMovie userMovie = user.getUserMovies().get(0);
-//        assertDatabaseHasEntity(userMovie,userMovie.getId()); //Check if the relation exists in database
+        user = facade.getUserById(user.getId());
+        assertEquals(1,user.getUserMovies().size());
+
+        UserMovie userMovie = user.getUserMovies().get(0);
+        assertDatabaseHasEntity(userMovie,userMovie.getId()); //Check if the relation exists in database
     }
 
     @Test

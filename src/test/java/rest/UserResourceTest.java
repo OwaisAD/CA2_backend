@@ -164,6 +164,66 @@ public class UserResourceTest extends ResourceTestEnvironment {
     }
 
     @Test
+    void removeMovieThatIsAlsoRelatedToOtherUsersTest() {
+        Movie movie = createAndPersistMovie();
+
+        User userNotDeleting = createAndPersistUser();
+        userNotDeleting.addMovie(movie);
+        update(userNotDeleting);
+
+        User userDeleting = createAndPersistUser();
+        userDeleting.addMovie(movie);
+        update(userDeleting);
+
+        given()
+                .header("Content-type", ContentType.JSON)
+                .when()
+                .delete(BASE_URL+userDeleting.getId()+"/movies/"+movie.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("movies", hasSize(0));
+
+        assertDatabaseHasEntity(movie,movie.getId());
+        assertDatabaseHasUserMovieRelation(userNotDeleting.getId(),movie.getId());
+        assertDatabaseDoesNotHaveUserMovieRelation(userDeleting.getId(), movie.getId());
+    }
+
+    @Test
+    void removeMovieWithLastUserRelationTest() {
+        User user = createAndPersistUser();
+        Movie movie = createAndPersistMovie();
+        user.addMovie(movie);
+        update(user);
+
+        given()
+                .header("Content-type", ContentType.JSON)
+                .when()
+                .delete(BASE_URL+user.getId()+"/movies/"+movie.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode());
+
+        assertDatabaseDoesNotHaveEntity(movie,movie.getId());
+    }
+
+    @Test
+    void removeNonExistingMovieFromUserTest() {
+        User user = createAndPersistUser();
+
+        given()
+                .header("Content-type", ContentType.JSON)
+                .when()
+                .delete(BASE_URL+user.getId()+"/movies/"+nonExistingId)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("movies", hasSize(0));
+    }
+
+    @Test
     void getUserTest() {
         User user = createAndPersistUser();
 

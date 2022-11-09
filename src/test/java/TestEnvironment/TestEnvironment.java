@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import utils.EMF_Creator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -134,10 +133,10 @@ public class TestEnvironment {
     protected void assertDatabaseHasEntityWith(Entity persistedEntity, String property, int value) {
         assertDatabaseHasEntity(persistedEntity,persistedEntity.getId());
 
-        assertDatabaseHas(persistedEntity,property,value);
+        assertDatabaseHasPropertyAndValue(persistedEntity,property,value);
     }
 
-    protected void assertDatabaseHas(Entity persistedEntity, String property, int value) {
+    protected void assertDatabaseHasPropertyAndValue(Entity persistedEntity, String property, int value) {
         EntityManager em = emf.createEntityManager();
 
 
@@ -193,17 +192,5 @@ public class TestEnvironment {
         }
     }
 
-    protected Entity getRefreshedEntity(Entity entity) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            entity = em.find(entity.getClass(), entity.getId());
-            em.getTransaction().begin();
-            em.merge(entity);
-            em.refresh(entity);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
-        return entity;
-    }
+
 }
