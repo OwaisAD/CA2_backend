@@ -96,6 +96,20 @@ public class UserResourceTest extends ResourceTestEnvironment {
     }
 
     @Test
+    void addMovieWhenUnauthenticatedTest() {
+        MovieDTO movieDTO = createMovieDTO();
+
+        given()
+                .header("Content-type", ContentType.JSON)
+                .body(GSON.toJson(movieDTO))
+                .when()
+                .post(BASE_URL+"me/movies")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.FORBIDDEN_403.getStatusCode());
+    }
+
+    @Test
     void addMovieToUserTest() {
         User user = createAndPersistUser();
         MovieDTO movieDTO = createMovieDTO();
@@ -141,6 +155,21 @@ public class UserResourceTest extends ResourceTestEnvironment {
                 .extract().path("movies.id[0]");
 
         assertEquals(expectedId,actualId);
+    }
+
+    @Test
+    void removeMovieWhenUnauthenticatedTest() {
+        Movie movie = createAndPersistMovie();
+
+        given()
+                .header("Content-type", ContentType.JSON)
+                .when()
+                .delete(BASE_URL+"me/movies/"+movie.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.FORBIDDEN_403.getStatusCode());
+
+        assertDatabaseHasEntity(movie,movie.getId());
     }
 
     @Test
@@ -229,7 +258,6 @@ public class UserResourceTest extends ResourceTestEnvironment {
                 .contentType(ContentType.JSON)
                 .body("movies", hasSize(0));
     }
-
     @Test
     void getUserTest() {
         User user = createAndPersistUser();
