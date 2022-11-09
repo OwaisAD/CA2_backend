@@ -65,8 +65,8 @@ public class UserResource {
         User user;
         int id = Integer.parseInt(securityContext.getUserPrincipal().getName());
         try {
-            Movie movie = movieFacade.getMovieByTitleAndYear(movieDTO.getTitle(), movieDTO.getYear());
             user = facade.getUserById(id);
+            Movie movie = movieFacade.getMovieByTitleAndYear(movieDTO.getTitle(), movieDTO.getYear());
 
             if (movie == null) {
                 movie = movieFacade.createMovie(new Movie(movieDTO.getTitle(), movieDTO.getYear()));
@@ -87,6 +87,7 @@ public class UserResource {
     }
 
     @DELETE
+    @RolesAllowed("user")
     @Path("me/movies/{movieId}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response removeMovieFromUser(@PathParam("movieId") int movieId) {
@@ -115,9 +116,10 @@ public class UserResource {
     }
 
     @GET
+    @RolesAllowed({"user","admin"})
     @Path("me")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getUser() {
+    public Response getMe() {
         User user;
         int id = Integer.parseInt(securityContext.getUserPrincipal().getName());
         try {
