@@ -15,18 +15,23 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ParallelDataFetch {
-    private static ExecutorService es = Executors.newCachedThreadPool();
+
     static String API_KEY_OMDB = "52e5ff12";
     static String API_KEY_NY = "5QjomAGUzfEYR3EdFfcVYCuHAYLAG0FK";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     //using threads based on: https://www.baeldung.com/java-future
 
+    protected static ExecutorService executorService;
+    public ParallelDataFetch(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
+
     // add movie future
-    public static Future<MovieDTOFromOMDB> getMovie(String movieName) {
-        return es.submit(() -> {
+    public static Future<MovieDTOFromOMDB> getMovie(String movieName, int year) {
+        return executorService.submit(() -> {
             String movieJSON = HttpUtils.fetchData("https://www.omdbapi.com/?apikey="
-                    + API_KEY_OMDB +"&t=" + movieName);
+                    + API_KEY_OMDB +"&t=" + movieName +"&y=" + year);
             MovieDTOFromOMDB movieDTOFromOMDB = GSON.fromJson(movieJSON, MovieDTOFromOMDB.class);
             movieDTOFromOMDB.setDataReference("https://omdbapi.com/");
             return movieDTOFromOMDB;
@@ -34,10 +39,10 @@ public class ParallelDataFetch {
     }
 
     // add review future
-    public static Future<ReviewDTO> getReview(String movieName) {
-        return es.submit(() -> {
-            String reviewJSON = HttpUtils.fetchData("https://api.nytimes.com/svc/movies/v2/reviews/search.json?query="
-                    + movieName + "&api-key=" + API_KEY_NY);
+    public static Future<ReviewDTO> getReview(String movieName, int year) {
+        return executorService.submit(() -> {
+            int openingYearPlusOne = year + 1;
+            String reviewJSON = HttpUtils.fetchData("https://api.nytimes.com/svc/movies/v2/reviews/search.json?query=" + movieName + "&opening-date=" + year + "-01-01:" + openingYearPlusOne + "-01-01&api-key=" + API_KEY_NY);
             //Change to DTO not JsonObject
             JsonObject reviewJSON2 = GSON.fromJson(reviewJSON, JsonObject.class);
             JsonArray jsonArray = reviewJSON2.getAsJsonArray("results");
@@ -56,13 +61,14 @@ public class ParallelDataFetch {
     }
 
     // method to get both
-    public static MovieReviewCombinedDTO runParallel(String movieName) throws ExecutionException, InterruptedException {
+    public static MovieReviewCombinedDTO runParallel(String movieName, int year) throws ExecutionException, InterruptedException {
        //Start both tasks before waiting
-        Future<MovieDTOFromOMDB> futureMovieDTO = getMovie(movieName);
-        Future<ReviewDTO> futureReviewDTO = getReview(movieName);
+        Future<MovieDTOFromOMDB> futureMovieDTO = getMovie(movieName, year);
+        Future<ReviewDTO> futureReviewDTO = getReview(movieName, year);
         MovieDTOFromOMDB movieDTOFromOMDB = futureMovieDTO.get();
         ReviewDTO reviewDTO = futureReviewDTO.get();
         MovieReviewCombinedDTO movieReviewCombinedDTO = new MovieReviewCombinedDTO(movieDTOFromOMDB, reviewDTO);
         return movieReviewCombinedDTO;
     }
+
 }

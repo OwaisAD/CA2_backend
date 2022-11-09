@@ -51,11 +51,12 @@ public class LoginEndpoint {
 
         try {
             User user = USER_FACADE.getVerifiedUser(username, password);
-            String token = createToken(user.getId(), username, user.getRolesAsStrings());
+            String token = createToken(user.getId(), username, user.getRolesAsStringList());
             JsonObject responseJson = new JsonObject();
             responseJson.addProperty("username", username);
             responseJson.addProperty("token", token);
-            responseJson.addProperty("role", user.getRolesAsStrings().get(0));
+            responseJson.addProperty("roles", getListAsString(user.getRolesAsStringList()));
+
             return Response.ok(new Gson().toJson(responseJson)).build();
 
         } catch (JOSEException | AuthenticationException ex) {
@@ -69,12 +70,7 @@ public class LoginEndpoint {
 
     private String createToken(int userId, String userName, List<String> roles) throws JOSEException {
 
-        StringBuilder res = new StringBuilder();
-        for (String string : roles) {
-            res.append(string);
-            res.append(",");
-        }
-        String rolesAsString = res.length() > 0 ? res.substring(0, res.length() - 1) : "";
+        String rolesAsString = getListAsString(roles);
         String issuer = "OwaisStudios";
 
         JWSSigner signer = new MACSigner(SharedSecret.getSharedKey());
@@ -90,6 +86,14 @@ public class LoginEndpoint {
         SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
         signedJWT.sign(signer);
         return signedJWT.serialize();
+    }
 
+    private String getListAsString(List<String> stringList) {
+        StringBuilder res = new StringBuilder();
+        for (String string : stringList) {
+            res.append(string);
+            res.append(",");
+        }
+        return res.length() > 0 ? res.substring(0, res.length() - 1) : "";
     }
 }

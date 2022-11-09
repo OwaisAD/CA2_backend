@@ -54,10 +54,7 @@ public class User implements Serializable, entities.Entity{
   @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
   private List<UserMovie> userMovies = new ArrayList<>();
 
-  public List<String> getRolesAsStrings() {
-    if (roles.isEmpty()) {
-      return null;
-    }
+  public List<String> getRolesAsStringList() {
     List<String> rolesAsStrings = new ArrayList<>();
     roles.forEach((role) -> {
       rolesAsStrings.add(role.getRole());

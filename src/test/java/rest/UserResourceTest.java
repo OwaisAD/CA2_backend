@@ -8,6 +8,8 @@ import io.restassured.http.ContentType;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,7 +98,7 @@ public class UserResourceTest extends ResourceTestEnvironment {
     }
 
     @Test
-    void addMovieWhenUnauthenticatedTest() {
+    void addMovieWhenUnauthenticatedTest() { // not logged in
         MovieDTO movieDTO = createMovieDTO();
 
         given()
@@ -107,6 +109,25 @@ public class UserResourceTest extends ResourceTestEnvironment {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.FORBIDDEN_403.getStatusCode());
+    }
+
+    @Test
+    void addMovieWhenUnauthorizedTest() { //when there's no role or the unallowed role
+        User user = createAndPersistUser();
+        user.setRoles(new ArrayList<>());
+        update(user);
+
+        MovieDTO movieDTO = createMovieDTO();
+        login(user.getUsername(), user.getUnhashedPassword());
+        given()
+                .header("Content-type", ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .body(GSON.toJson(movieDTO))
+                .when()
+                .post(BASE_URL+"me/movies")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.UNAUTHORIZED_401.getStatusCode());
     }
 
     @Test
@@ -278,7 +299,52 @@ public class UserResourceTest extends ResourceTestEnvironment {
             .body("id", equalTo(id))
             .body("roles",hasSize(1))
             .body("roles",hasItem("user"));
-
-
     }
+
+
+    // THIS TEST IS FOR EXPERIMENTAL PURPOSES ONLY - CAN BE REMADE WITH MOCK FROM EACH APIS
+//    @Test
+//    void getWatchlist() {
+//        User user = createAndPersistUser();
+//        Movie movie1 = new Movie("Interstellar", 2014);
+//        Movie movie2 = new Movie("The Martian", 2015);
+//        Movie movie3 = new Movie("Nightcrawler", 2014);
+//        Movie movie4 = new Movie("Interstellar", 2014);
+//        Movie movie5 = new Movie("The Martian", 2015);
+//        Movie movie6 = new Movie("Nightcrawler", 2014);
+//        Movie movie7 = new Movie("Interstellar", 2014);
+//        Movie movie8 = new Movie("The Martian", 2015);
+//        Movie movie9 = new Movie("Nightcrawler", 2014);
+//        Movie movie10 = new Movie("Interstellar", 2014);
+//        user.addMovie(movie1);
+//        user.addMovie(movie2);
+//        user.addMovie(movie3);
+//        user.addMovie(movie4);
+//        user.addMovie(movie5);
+//        user.addMovie(movie6);
+//        user.addMovie(movie7);
+//        user.addMovie(movie8);
+//        user.addMovie(movie9);
+//        user.addMovie(movie10);
+//        update(user);
+//
+//        int id = user.getId();
+//        login(user.getUsername(), user.getUnhashedPassword());
+//        ArrayList json = given()
+//                .header("Content-type", ContentType.JSON)
+//                .header("x-access-token", securityToken)
+//                .when()
+//                .get(BASE_URL+"me/movies")
+//                .then()
+//                .assertThat()
+//                .statusCode(HttpStatus.OK_200.getStatusCode())
+//                .contentType(ContentType.JSON)
+//                .body("$", hasSize(10))
+//                .extract().path("$");
+//
+//        for (Object o : json) {
+//            System.out.println(o);
+//        }
+//    }
+
 }

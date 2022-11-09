@@ -2,8 +2,8 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dtos.MovieDTO;
-import dtos.UserDTO;
+import datafetching.ParallelDataFetch;
+import dtos.*;
 import entities.Movie;
 import entities.User;
 import errorhandling.IllegalAgeException;
@@ -20,6 +20,14 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Path("users")
 public class UserResource {
@@ -50,7 +58,7 @@ public class UserResource {
         }
 
         userDTO = new UserDTO(user.getId(), user.getUsername(), user.getAge(),
-                user.getRolesAsStrings(),user.getMovies());
+                user.getRolesAsStringList(),user.getMovies());
         String userToJson = GSON.toJson(userDTO);
         return Response.status(HttpStatus.CREATED_201.getStatusCode()).entity(userToJson).build();
     }
@@ -79,7 +87,7 @@ public class UserResource {
         }
 
         UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getAge(),
-                user.getRolesAsStrings(), user.getMovies());
+                user.getRolesAsStringList(), user.getMovies());
 
         String userToJson = GSON.toJson(userDTO);
 
@@ -108,7 +116,7 @@ public class UserResource {
         }
 
         UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getAge(),
-                user.getRolesAsStrings(), user.getMovies());
+                user.getRolesAsStringList(), user.getMovies());
 
         String userToJson = GSON.toJson(userDTO);
 
@@ -131,11 +139,55 @@ public class UserResource {
                 user.getId(),
                 user.getUsername(),
                 user.getAge(),
-                user.getRolesAsStrings(),
+                user.getRolesAsStringList(),
                 user.getMovies()
         );
 
         String userToJson = GSON.toJson(userDTO);
         return Response.status(HttpStatus.OK_200.getStatusCode()).entity(userToJson).build();
+    }
+
+    @GET
+    @RolesAllowed("user")
+    @Path("me/movies")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getMovies() {
+        User user;
+        List<MovieReviewCombinedDTO> movieAndReviewDTOs = new ArrayList<>();
+        int id = Integer.parseInt(securityContext.getUserPrincipal().getName());
+        try {
+            user = facade.getUserById(id);
+            List<Movie> movies = user.getMovies();
+
+            ExecutorService executorService = Executors.newCachedThreadPool();
+            ParallelDataFetch fetcher = new ParallelDataFetch(executorService);
+
+            List<List<Future>> futures = new ArrayList<>();
+
+            for (Movie movie : movies) {
+                List<Future> innerfutures = new ArrayList<>();
+                Future<MovieDTOFromOMDB> futureMovieDTO = fetcher.getMovie(movie.getTitle(), movie.getYear());
+                Future<ReviewDTO> futureReviewDTO = fetcher.getReview(movie.getTitle(), movie.getYear());
+                innerfutures.add(futureMovieDTO);
+                innerfutures.add(futureReviewDTO);
+                futures.add(innerfutures);
+            }
+
+            for (List<Future> future : futures) {
+                MovieDTOFromOMDB movieDTOFromOMDB = (MovieDTOFromOMDB) future.get(0).get();
+                ReviewDTO reviewDTO = (ReviewDTO) future.get(1).get();
+                movieAndReviewDTOs.add(new MovieReviewCombinedDTO(movieDTOFromOMDB, reviewDTO));
+            }
+
+        } catch (EntityNotFoundException e) {
+            throw new NotFoundException("No such user with id " + id + " exist");
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        String movieAndReviewDTOsToJson = GSON.toJson(movieAndReviewDTOs);
+        return Response.status(HttpStatus.OK_200.getStatusCode()).entity(movieAndReviewDTOsToJson).build();
     }
 }

@@ -17,7 +17,7 @@ public class UserPrincipal implements Principal {
   public UserPrincipal(User user) {
     this.userId = String.valueOf(user.getId());
     this.username = user.getUsername();
-    this.roles = user.getRolesAsStrings();
+    this.roles = user.getRolesAsStringList();
   }
 
   public UserPrincipal( String userId, String username, String[] roles) {

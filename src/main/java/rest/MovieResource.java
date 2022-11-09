@@ -30,15 +30,15 @@ public class MovieResource {
         return Response.ok().entity(MovieReviewCombinedDTO.getMovieDataAsJSON("Sequential run", combined, endTime)).build();
     }
 
-    @GET
-    @Path("/par/{name}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getMovieData(@PathParam("name") String movieName) throws ExecutionException, InterruptedException {
-        LocalTime begin = LocalTime.now();
-        MovieReviewCombinedDTO combined = ParallelDataFetch.runParallel(movieName);
-        LocalTime end = LocalTime.now();
-
-        long endTime = ChronoUnit.NANOS.between(begin, end);
-        return Response.ok().entity(MovieReviewCombinedDTO.getMovieDataAsJSON("Parallel run", combined, endTime)).build();
-    }
+//    @GET
+//    @Path("/par/{name}")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public Response getMovieData(@PathParam("name") String movieName) throws ExecutionException, InterruptedException {
+//        LocalTime begin = LocalTime.now();
+//        MovieReviewCombinedDTO combined = ParallelDataFetch.runParallel(movieName);
+//        LocalTime end = LocalTime.now();
+//
+//        long endTime = ChronoUnit.NANOS.between(begin, end);
+//        return Response.ok().entity(MovieReviewCombinedDTO.getMovieDataAsJSON("Parallel run", combined, endTime)).build();
+//    }
 }
