@@ -32,6 +32,8 @@ public class User implements Serializable, entities.Entity{
   @Size(min = 1, max = 255)
   @Column(name = "password")
   private String password;
+  @Transient
+  private String unhashedPassword;
 
   @NotNull
   @Column(name = "age")
@@ -83,12 +85,14 @@ public class User implements Serializable, entities.Entity{
   public User(String username, String password) throws InvalidPasswordException {
     this.username = username;
     this.password = validateAndHashPassword(password);
+    this.unhashedPassword = password;
   }
 
   public User(String username, String password, int age) throws InvalidPasswordException {
     this.username = username;
     this.password = validateAndHashPassword(password);
     this.age = age;
+    this.unhashedPassword = password;
   }
 
   public Integer getId() {
@@ -157,5 +161,9 @@ public class User implements Serializable, entities.Entity{
   @Override
   public int hashCode() {
     return Objects.hash(getId());
+  }
+
+  public String getUnhashedPassword() {
+    return unhashedPassword;
   }
 }

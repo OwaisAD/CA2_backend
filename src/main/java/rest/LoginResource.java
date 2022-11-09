@@ -56,10 +56,12 @@ public class LoginResource {
     @Path("user")
     @RolesAllowed("user")
     public String getFromUser() {
-        String thisuser = securityContext.getUserPrincipal().getName();
+        int id = Integer.parseInt(securityContext.getUserPrincipal().getName());
+        //int id = securityContext.getUserPrincipal()
+        System.out.println(id);
 
 
-        return "{\"msg\": \"Hello to User: " + thisuser + "\"}";
+        return "{\"msg\": \"Hello to User: " + id + "\"}";
     }
 
     @GET

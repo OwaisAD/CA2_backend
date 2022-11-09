@@ -20,8 +20,11 @@ import utils.EMF_Creator;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
+import static io.restassured.RestAssured.given;
+
 public class ResourceTestEnvironment extends TestEnvironment {
 
+    protected static String securityToken;
     protected static final int SERVER_PORT = 7777;
     protected static final String SERVER_URL = "http://localhost/api";
     private static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
@@ -51,6 +54,21 @@ public class ResourceTestEnvironment extends TestEnvironment {
         EMF_Creator.endREST_TestWithDB();
         httpServer.shutdownNow();
     }
+
+
+    //Utility method to login and set the returned securityToken
+    protected static void login(String role, String password) {
+        String json = String.format("{username: \"%s\", password: \"%s\"}", role, password);
+        securityToken = given()
+                .contentType("application/json")
+                .body(json)
+                //.when().post("/api/login")
+                .when().post("/login")
+                .then()
+                .extract().path("token");
+        //System.out.println("TOKEN ---> " + securityToken);
+    }
+
 
     protected UserDTO createUserDTO() {
         User user = createUser();

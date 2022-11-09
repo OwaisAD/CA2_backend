@@ -1,11 +1,9 @@
 package rest;
 
 import dtos.MovieDTO;
-import dtos.MovieDTOFromOMDB;
 import dtos.UserDTO;
 import entities.Movie;
 import entities.User;
-import entities.UserMovie;
 import io.restassured.http.ContentType;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.junit.jupiter.api.Test;
@@ -101,13 +99,14 @@ public class UserResourceTest extends ResourceTestEnvironment {
     void addMovieToUserTest() {
         User user = createAndPersistUser();
         MovieDTO movieDTO = createMovieDTO();
-
+        login(user.getUsername(), user.getUnhashedPassword());
         int movieId = given()
                 .header("Content-type", ContentType.JSON)
+                .header("x-access-token", securityToken)
                 .and()
                 .body(GSON.toJson(movieDTO))
                 .when()
-                .post(BASE_URL+user.getId()+"/movies")
+                .post(BASE_URL+"me/movies")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())

@@ -15,14 +15,17 @@ import facades.UserFacade;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import utils.EMF_Creator;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 
 @Path("users")
 public class UserResource {
+
+    @Context
+    SecurityContext securityContext;
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
@@ -53,13 +56,14 @@ public class UserResource {
     }
 
     @POST
-    @Path("{id}/movies")
+    @Path("me/movies")
+    @RolesAllowed("user")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response addMovieToUser(@PathParam("id") int id, String movieFromJson) {
+    public Response addMovieToUser(String movieFromJson) {
         MovieDTO movieDTO = GSON.fromJson(movieFromJson, MovieDTO.class);
         User user;
-
+        int id = Integer.parseInt(securityContext.getUserPrincipal().getName());
         try {
             Movie movie = movieFacade.getMovieByTitleAndYear(movieDTO.getTitle(), movieDTO.getYear());
             user = facade.getUserById(id);
