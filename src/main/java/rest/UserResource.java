@@ -105,4 +105,6 @@ public class UserResource {
 
         return Response.status(HttpStatus.OK_200.getStatusCode()).entity(userToJson).build();
     }
+
+
 }

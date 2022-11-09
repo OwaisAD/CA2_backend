@@ -151,6 +151,8 @@ public class UserResourceTest extends ResourceTestEnvironment {
         user.addMovie(movie);
         update(user);
 
+        UserMovie userMovie = user.getUserMovies().get(0);
+
         given()
             .header("Content-type", ContentType.JSON)
             .when()
@@ -160,5 +162,14 @@ public class UserResourceTest extends ResourceTestEnvironment {
             .statusCode(HttpStatus.OK_200.getStatusCode())
             .contentType(ContentType.JSON)
             .body("movies", hasSize(0));
+
+        assertDatabaseDoesNotHaveEntity(userMovie, userMovie.getId());
+    }
+
+    @Test
+    void getUserTest() {
+        User user = createAndPersistUser();
+
+
     }
 }
