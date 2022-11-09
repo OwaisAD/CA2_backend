@@ -49,7 +49,6 @@ public class MovieFacade {
         } finally {
             em.close();
         }
-
     }
 
     public Movie getMovieByTitleAndYear(String title, Integer year) {

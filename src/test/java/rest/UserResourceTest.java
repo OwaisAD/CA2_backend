@@ -102,7 +102,7 @@ public class UserResourceTest extends ResourceTestEnvironment {
         User user = createAndPersistUser();
         MovieDTO movieDTO = createMovieDTO();
 
-        given()
+        int movieId = given()
                 .header("Content-type", ContentType.JSON)
                 .and()
                 .body(GSON.toJson(movieDTO))
@@ -113,11 +113,10 @@ public class UserResourceTest extends ResourceTestEnvironment {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .contentType(ContentType.JSON)
                 .body("id",equalTo(user.getId()))
-                .body("movies",hasSize(1));
+                .body("movies",hasSize(1))
+                .extract().path("movies.id[0]");
 
-//        user = (User) getRefreshedEntity(user);
-//        UserMovie userMovie = user.getUserMovies().get(0);
-//        assertDatabaseHasEntity(userMovie,userMovie.getId());
+        assertDatabaseHasUserMovieRelation(user.getId(), movieId);
     }
 
     @Test
@@ -151,8 +150,6 @@ public class UserResourceTest extends ResourceTestEnvironment {
         user.addMovie(movie);
         update(user);
 
-        UserMovie userMovie = user.getUserMovies().get(0);
-
         given()
             .header("Content-type", ContentType.JSON)
             .when()
@@ -163,7 +160,7 @@ public class UserResourceTest extends ResourceTestEnvironment {
             .contentType(ContentType.JSON)
             .body("movies", hasSize(0));
 
-        assertDatabaseDoesNotHaveEntity(userMovie, userMovie.getId());
+        assertDatabaseDoesNotHaveUserMovieRelation(user.getId(), movie.getId());
     }
 
     @Test

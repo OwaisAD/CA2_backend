@@ -3,6 +3,7 @@ package entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -44,12 +45,12 @@ public class User implements Serializable, entities.Entity{
 
   @ManyToMany(cascade = CascadeType.PERSIST)
   @JoinTable(name = "user_movie",
-          joinColumns = @JoinColumn(name = "movie_id"),
-          inverseJoinColumns = @JoinColumn(name = "user_id"))
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "movie_id"))
   private List<Movie> movies = new ArrayList<>();
 
-  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-  private List<UserMovie> userMovies = new ArrayList<>();
+//  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+//  private List<UserMovie> userMovies = new ArrayList<>();
 
   public List<String> getRolesAsStrings() {
     if (roles.isEmpty()) {
@@ -141,7 +142,20 @@ public class User implements Serializable, entities.Entity{
     movies.remove(movie);
   }
 
-  public List<UserMovie> getUserMovies() {
-    return userMovies;
+//  public List<UserMovie> getUserMovies() {
+//    return userMovies;
+//  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof User)) return false;
+    User user = (User) o;
+    return getId().equals(user.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId());
   }
 }

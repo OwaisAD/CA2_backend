@@ -2,13 +2,12 @@ package TestEnvironment;
 
 import com.github.javafaker.Faker;
 import entities.*;
+import entities.Entity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import utils.EMF_Creator;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -141,6 +140,7 @@ public class TestEnvironment {
     protected void assertDatabaseHas(Entity persistedEntity, String property, int value) {
         EntityManager em = emf.createEntityManager();
 
+
         TypedQuery<Entity> query = em.createQuery(
                 "SELECT e FROM " + persistedEntity.getClass().getSimpleName()
                         + " e WHERE e." + property + " = :value " +
@@ -155,6 +155,41 @@ public class TestEnvironment {
         } catch (Exception e) {
             assertTrue(false,persistedEntity.getClass().getSimpleName()+" does not have "+
                     property+" with value "+value+" in database");
+        }finally {
+            em.close();
+        }
+    }
+
+
+    protected void assertDatabaseHasUserMovieRelation(int userId, int movieId) {
+        EntityManager em = emf.createEntityManager();
+        UserMovie userMovie = null;
+        try {
+            Query query = em.createQuery("SELECT um FROM UserMovie um WHERE um.movie.id=:movieId AND um.user.id=:userId");
+            query.setParameter("movieId", movieId);
+            query.setParameter("userId", userId);
+            userMovie = (UserMovie) query.getSingleResult();
+            assertNotNull(userMovie); //movie does exist
+        } catch (NoResultException e) {
+            assertNotNull(userMovie); //movie does not exist
+        } finally {
+            em.close();
+        }
+    }
+
+    protected void assertDatabaseDoesNotHaveUserMovieRelation(int userId, int movieId) {
+        EntityManager em = emf.createEntityManager();
+        UserMovie userMovie = null;
+        try {
+            Query query = em.createQuery("SELECT um FROM UserMovie um WHERE um.movie.id=:movieId AND um.user.id=:userId");
+            query.setParameter("movieId", movieId);
+            query.setParameter("userId", userId);
+            userMovie = (UserMovie) query.getSingleResult();
+            assertNull(userMovie); //movie does exist
+        } catch (NoResultException e) {
+            assertNull(userMovie); //movie does not exist
+        } finally {
+            em.close();
         }
     }
 

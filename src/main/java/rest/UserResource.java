@@ -91,7 +91,6 @@ public class UserResource {
         try {
             Movie movie = movieFacade.getMovieById(movieId);
             user = facade.getUserById(id);
-
             user.removeMovie(movie);
             facade.updateUser(user);
         } catch (EntityNotFoundException e) {
