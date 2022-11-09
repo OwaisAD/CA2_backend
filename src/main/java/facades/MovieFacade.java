@@ -1,8 +1,6 @@
 package facades;
 
 import entities.Movie;
-import errorhandling.IllegalAgeException;
-import errorhandling.InvalidUsernameException;
 
 import javax.persistence.*;
 
@@ -17,7 +15,7 @@ public class MovieFacade {
     }
 
 
-    public static MovieFacade getMovieFacade(EntityManagerFactory _emf) {
+    public static MovieFacade getFacade(EntityManagerFactory _emf) {
         if (facade == null) {
             emf = _emf;
 

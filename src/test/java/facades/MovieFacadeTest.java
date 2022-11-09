@@ -5,8 +5,6 @@ import entities.Movie;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.EntityNotFoundException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MovieFacadeTest extends TestEnvironment {
@@ -17,7 +15,7 @@ public class MovieFacadeTest extends TestEnvironment {
     @BeforeAll
     static void beforeAll() {
         TestEnvironment.setUpClass();
-        facade = MovieFacade.getMovieFacade(emf);
+        facade = MovieFacade.getFacade(emf);
     }
 
     @Test

@@ -20,7 +20,7 @@ import utils.EMF_Creator;
 public class Populator {
     public static void populate() throws InvalidPasswordException, InvalidUsernameException, IllegalAgeException {
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
-        UserFacade userFacade = UserFacade.getUserFacade(emf);
+        UserFacade userFacade = UserFacade.getFacade(emf);
         userFacade.createUser(new User("owais","1234",26));
         userFacade.createUser(new User("daniel","1234",26));
         userFacade.createUser(new User("andreas","1234",23));

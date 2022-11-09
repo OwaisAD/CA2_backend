@@ -30,13 +30,13 @@ public class TestEnvironment {
             em.createQuery("DELETE FROM Role").executeUpdate();
             em.createQuery("DELETE FROM Movie").executeUpdate();
             em.getTransaction().commit();
-
-            Role role = createRole();
-            role.setRole("user");
-            persist(role);
         } finally {
             em.close();
         }
+
+        Role role = createRole();
+        role.setRole("user");
+        persist(role);
     }
 
     @BeforeAll

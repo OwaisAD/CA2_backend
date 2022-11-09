@@ -2,7 +2,6 @@ package facades;
 
 import TestEnvironment.TestEnvironment;
 import entities.Role;
-import errorhandling.NotFoundException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,7 @@ public class RoleFacadeTest extends TestEnvironment {
     @BeforeAll
     public static void setUpClass() {
         TestEnvironment.setUpClass();
-        facade = RoleFacade.getRoleFacade(emf);
+        facade = RoleFacade.getFacade(emf);
     }
 
     @Test

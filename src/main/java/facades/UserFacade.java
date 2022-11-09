@@ -1,13 +1,11 @@
 package facades;
 
-import entities.Role;
 import entities.User;
 
 import javax.persistence.*;
 
 import errorhandling.IllegalAgeException;
 import errorhandling.InvalidUsernameException;
-import errorhandling.NotFoundException;
 import security.errorhandling.AuthenticationException;
 
 /**
@@ -32,7 +30,7 @@ public class UserFacade {
      * @param _emf
      * @return the instance of this facade.
      */
-    public static UserFacade getUserFacade(EntityManagerFactory _emf) {
+    public static UserFacade getFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
             instance = new UserFacade();
@@ -72,8 +70,9 @@ public class UserFacade {
             throw new InvalidUsernameException("Username cannot be null or an empty string");
         }
 
-        if(user.getUsername().length() < 3 || user.getUsername().length() > 20) {
-            throw new InvalidUsernameException("Username length should be between 3 and 20 characters");
+        if(user.getUsername().length() < MINIMUM_USERNAME_LENGTH || user.getUsername().length() > MAXIMUM_USERNAME_LENGTH) {
+            throw new InvalidUsernameException("Username length should be between " + MINIMUM_USERNAME_LENGTH + " and " +
+                    + MAXIMUM_USERNAME_LENGTH+ " characters");
         }
 
         try {

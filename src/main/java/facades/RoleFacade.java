@@ -8,7 +8,7 @@ public class RoleFacade {
     private static EntityManagerFactory emf;
     private static RoleFacade instance;
 
-    public static RoleFacade getRoleFacade(EntityManagerFactory _emf) {
+    public static RoleFacade getFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
             instance = new RoleFacade();

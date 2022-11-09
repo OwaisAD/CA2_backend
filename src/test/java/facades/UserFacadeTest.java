@@ -3,7 +3,6 @@ package facades;
 import TestEnvironment.TestEnvironment;
 import entities.Movie;
 import entities.User;
-import entities.UserMovie;
 import errorhandling.IllegalAgeException;
 import errorhandling.InvalidUsernameException;
 
@@ -26,7 +25,7 @@ public class UserFacadeTest extends TestEnvironment {
     @BeforeAll
     public static void setUpClass() {
         TestEnvironment.setUpClass();
-        facade = UserFacade.getUserFacade(emf);
+        facade = UserFacade.getFacade(emf);
     }
 
     // TODO: Delete or change this method 

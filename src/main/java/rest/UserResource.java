@@ -26,9 +26,9 @@ public class UserResource {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
-    private UserFacade facade = UserFacade.getUserFacade(emf);
-    private RoleFacade roleFacade = RoleFacade.getRoleFacade(emf);
-    private MovieFacade movieFacade = MovieFacade.getMovieFacade(emf);
+    private UserFacade facade = UserFacade.getFacade(emf);
+    private RoleFacade roleFacade = RoleFacade.getFacade(emf);
+    private MovieFacade movieFacade = MovieFacade.getFacade(emf);
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
@@ -52,7 +52,7 @@ public class UserResource {
         return Response.status(HttpStatus.CREATED_201.getStatusCode()).entity(userToJson).build();
     }
 
-    @PUT
+    @POST
     @Path("{id}/movies")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
@@ -82,7 +82,7 @@ public class UserResource {
         return Response.status(HttpStatus.OK_200.getStatusCode()).entity(userToJson).build();
     }
 
-    @PUT
+    @DELETE
     @Path("{id}/movies/{movieId}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response removeMovieFromUser(@PathParam("id") int id, @PathParam("movieId") int movieId) {
