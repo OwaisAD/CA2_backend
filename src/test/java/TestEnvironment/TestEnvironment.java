@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,6 +18,8 @@ public class TestEnvironment {
 
     protected int nonExistingId;
     protected static Faker faker;
+
+    protected static Role role;
     protected static EntityManagerFactory emf;
 
     @BeforeEach
@@ -34,7 +37,7 @@ public class TestEnvironment {
             em.close();
         }
 
-        Role role = createRole();
+        role = createRole();
         role.setRole("user");
         persist(role);
     }
@@ -77,11 +80,13 @@ public class TestEnvironment {
 
     protected User createUser() {
         try {
-            return new User(
+            User user = new User(
                     faker.name().username(),
                     faker.internet().password(),
                     faker.number().numberBetween(13, 120)
             );
+            user.addRole(role);
+            return user;
         } catch (Exception e) {
             System.out.println("Exception: " + e);
         }

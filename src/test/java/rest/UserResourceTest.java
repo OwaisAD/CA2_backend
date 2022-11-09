@@ -170,6 +170,21 @@ public class UserResourceTest extends ResourceTestEnvironment {
     void getUserTest() {
         User user = createAndPersistUser();
 
+        int id = user.getId();
+        given()
+            .header("Content-type", ContentType.JSON)
+            .when()
+            .get(BASE_URL+id)
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.OK_200.getStatusCode())
+            .contentType(ContentType.JSON)
+            .body("username", equalTo(user.getUsername()))
+            .body("age", equalTo(user.getAge()))
+            .body("id", equalTo(id))
+            .body("roles",hasSize(1))
+            .body("roles",hasItem("user"));
+
 
     }
 }

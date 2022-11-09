@@ -106,5 +106,26 @@ public class UserResource {
         return Response.status(HttpStatus.OK_200.getStatusCode()).entity(userToJson).build();
     }
 
+    @GET
+    @Path("{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getUser(@PathParam("id") int id) {
+        User user;
 
+        try {
+            user = facade.getUserById(id);
+        } catch (EntityNotFoundException e) {
+            throw new NotFoundException("No such user with id " + id + " exist");
+        }
+        UserDTO userDTO = new UserDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getAge(),
+                user.getRolesAsStrings(),
+                user.getMovies()
+        );
+
+        String userToJson = GSON.toJson(userDTO);
+        return Response.status(HttpStatus.OK_200.getStatusCode()).entity(userToJson).build();
+    }
 }
