@@ -87,11 +87,11 @@ public class UserResource {
     }
 
     @DELETE
-    @Path("{id}/movies/{movieId}")
+    @Path("me/movies/{movieId}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response removeMovieFromUser(@PathParam("id") int id, @PathParam("movieId") int movieId) {
+    public Response removeMovieFromUser(@PathParam("movieId") int movieId) {
         User user;
-
+        int id = Integer.parseInt(securityContext.getUserPrincipal().getName());
         try {
             Movie movie = movieFacade.getMovieById(movieId);
             user = facade.getUserById(id);
@@ -115,11 +115,11 @@ public class UserResource {
     }
 
     @GET
-    @Path("{id}")
+    @Path("me")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getUser(@PathParam("id") int id) {
+    public Response getUser() {
         User user;
-
+        int id = Integer.parseInt(securityContext.getUserPrincipal().getName());
         try {
             user = facade.getUserById(id);
         } catch (EntityNotFoundException e) {

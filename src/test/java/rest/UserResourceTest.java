@@ -122,16 +122,17 @@ public class UserResourceTest extends ResourceTestEnvironment {
     void addMovieThatAlreadyExistsTest() {
         Movie movie = createAndPersistMovie();
         MovieDTO movieDTO = new MovieDTO(movie.getTitle(), movie.getYear());
-
         User user = createAndPersistUser();
 
+        login(user.getUsername(), user.getUnhashedPassword());
         int expectedId = movie.getId();
         int actualId = given()
                 .header("Content-type", ContentType.JSON)
+                .header("x-access-token", securityToken)
                 .and()
                 .body(GSON.toJson(movieDTO))
                 .when()
-                .post(BASE_URL+user.getId()+"/movies")
+                .post(BASE_URL+"me/movies")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
@@ -148,11 +149,12 @@ public class UserResourceTest extends ResourceTestEnvironment {
         Movie movie = createAndPersistMovie();
         user.addMovie(movie);
         update(user);
-
+        login(user.getUsername(), user.getUnhashedPassword());
         given()
             .header("Content-type", ContentType.JSON)
+            .header("x-access-token", securityToken)
             .when()
-            .delete(BASE_URL+user.getId()+"/movies/"+movie.getId())
+            .delete(BASE_URL+"me/movies/"+movie.getId())
             .then()
             .assertThat()
             .statusCode(HttpStatus.OK_200.getStatusCode())
@@ -174,10 +176,12 @@ public class UserResourceTest extends ResourceTestEnvironment {
         userDeleting.addMovie(movie);
         update(userDeleting);
 
+        login(userDeleting.getUsername(), userDeleting.getUnhashedPassword());
         given()
                 .header("Content-type", ContentType.JSON)
+                .header("x-access-token", securityToken)
                 .when()
-                .delete(BASE_URL+userDeleting.getId()+"/movies/"+movie.getId())
+                .delete(BASE_URL+"me/movies/"+movie.getId())
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
@@ -196,10 +200,12 @@ public class UserResourceTest extends ResourceTestEnvironment {
         user.addMovie(movie);
         update(user);
 
+        login(user.getUsername(), user.getUnhashedPassword());
         given()
                 .header("Content-type", ContentType.JSON)
+                .header("x-access-token", securityToken)
                 .when()
-                .delete(BASE_URL+user.getId()+"/movies/"+movie.getId())
+                .delete(BASE_URL+"me/movies/"+movie.getId())
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode());
@@ -211,10 +217,12 @@ public class UserResourceTest extends ResourceTestEnvironment {
     void removeNonExistingMovieFromUserTest() {
         User user = createAndPersistUser();
 
+        login(user.getUsername(), user.getUnhashedPassword());
         given()
                 .header("Content-type", ContentType.JSON)
+                .header("x-access-token", securityToken)
                 .when()
-                .delete(BASE_URL+user.getId()+"/movies/"+nonExistingId)
+                .delete(BASE_URL+"me/movies/"+nonExistingId)
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
@@ -227,10 +235,12 @@ public class UserResourceTest extends ResourceTestEnvironment {
         User user = createAndPersistUser();
 
         int id = user.getId();
+        login(user.getUsername(), user.getUnhashedPassword());
         given()
             .header("Content-type", ContentType.JSON)
+            .header("x-access-token", securityToken)
             .when()
-            .get(BASE_URL+id)
+            .get(BASE_URL+"me")
             .then()
             .assertThat()
             .statusCode(HttpStatus.OK_200.getStatusCode())

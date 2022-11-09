@@ -57,8 +57,8 @@ public class ResourceTestEnvironment extends TestEnvironment {
 
 
     //Utility method to login and set the returned securityToken
-    protected static void login(String role, String password) {
-        String json = String.format("{username: \"%s\", password: \"%s\"}", role, password);
+    protected static void login(String username, String password) {
+        String json = String.format("{username: \"%s\", password: \"%s\"}", username, password);
         securityToken = given()
                 .contentType("application/json")
                 .body(json)
