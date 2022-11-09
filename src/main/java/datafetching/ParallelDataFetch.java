@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dtos.MovieDTO;
 import dtos.MovieDTOFromOMDB;
 import dtos.MovieReviewCombinedDTO;
 import dtos.ReviewDTO;
@@ -11,7 +12,6 @@ import utils.HttpUtils;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ParallelDataFetch {
@@ -27,14 +27,18 @@ public class ParallelDataFetch {
         this.executorService = executorService;
     }
 
+
+    // THE FACT THAT WE ARE TAKING MOVIEID AS AN ARGUMENT IN THIS METHOD SHOULD 100% BE CHANGED :)
     // add movie future
-    public static Future<MovieDTOFromOMDB> getMovie(String movieName, int year) {
+    public static Future<MovieDTO> getMovie(String movieName, int year, int movieId) {
         return executorService.submit(() -> {
             String movieJSON = HttpUtils.fetchData("https://www.omdbapi.com/?apikey="
                     + API_KEY_OMDB +"&t=" + movieName +"&y=" + year);
             MovieDTOFromOMDB movieDTOFromOMDB = GSON.fromJson(movieJSON, MovieDTOFromOMDB.class);
-            movieDTOFromOMDB.setDataReference("https://omdbapi.com/");
-            return movieDTOFromOMDB;
+            MovieDTO movieDTO = new MovieDTO(movieDTOFromOMDB);
+            movieDTO.setId(movieId);
+            movieDTO.setDataReference("https://omdbapi.com/");
+            return movieDTO;
         });
     }
 
@@ -63,11 +67,11 @@ public class ParallelDataFetch {
     // method to get both
     public static MovieReviewCombinedDTO runParallel(String movieName, int year) throws ExecutionException, InterruptedException {
        //Start both tasks before waiting
-        Future<MovieDTOFromOMDB> futureMovieDTO = getMovie(movieName, year);
+        Future<MovieDTO> futureMovieDTO = getMovie(movieName, year, 0);
         Future<ReviewDTO> futureReviewDTO = getReview(movieName, year);
-        MovieDTOFromOMDB movieDTOFromOMDB = futureMovieDTO.get();
+        MovieDTO movieDTO = futureMovieDTO.get();
         ReviewDTO reviewDTO = futureReviewDTO.get();
-        MovieReviewCombinedDTO movieReviewCombinedDTO = new MovieReviewCombinedDTO(movieDTOFromOMDB, reviewDTO);
+        MovieReviewCombinedDTO movieReviewCombinedDTO = new MovieReviewCombinedDTO(movieDTO, reviewDTO);
         return movieReviewCombinedDTO;
     }
 

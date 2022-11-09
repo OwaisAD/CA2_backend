@@ -346,5 +346,31 @@ public class UserResourceTest extends ResourceTestEnvironment {
 //            System.out.println(o);
 //        }
 //    }
+    @Test
+    void getWatchlist() {
+        User user = createAndPersistUser();
+        Movie movie1 = new Movie("Interstellar", 2014);
+        Movie movie2 = new Movie("The Martian", 2015);
+        user.addMovie(movie1);
+        user.addMovie(movie2);
+        update(user);
 
+        int id = user.getId();
+        login(user.getUsername(), user.getUnhashedPassword());
+        ArrayList json = given()
+                .header("Content-type", ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .get(BASE_URL+"me/movies")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("$", hasSize(2))
+                .extract().path("$");
+
+        for (Object o : json) {
+            System.out.println(o);
+        }
+    }
 }

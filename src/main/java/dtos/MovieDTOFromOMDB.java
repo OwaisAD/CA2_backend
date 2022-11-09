@@ -9,10 +9,9 @@ public class MovieDTOFromOMDB {
     private String Runtime;
     private String Genre;
     private String Poster;
-    private String dataReference;
 
     public MovieDTOFromOMDB(String title, String year, String released, String runtime, String genre, String poster) {
-        Title = title;
+        this.Title = title;
         Year = year;
         Released = released;
         Runtime = runtime;
@@ -25,7 +24,7 @@ public class MovieDTOFromOMDB {
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.Title = title;
     }
 
     public String getYear() {
@@ -68,11 +67,4 @@ public class MovieDTOFromOMDB {
         Poster = poster;
     }
 
-    public String getDataReference() {
-        return dataReference;
-    }
-
-    public void setDataReference(String dataReference) {
-        this.dataReference = dataReference;
-    }
 }

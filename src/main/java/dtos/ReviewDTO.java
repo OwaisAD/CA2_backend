@@ -7,7 +7,7 @@ public class ReviewDTO {
     private String suggested_link_text;
     private String url;
 
-    private String reviewReference;
+    private String review_reference;
 
 
     public ReviewDTO(String summary_short, String suggested_link_text, String url) {
@@ -16,35 +16,11 @@ public class ReviewDTO {
         this.url = url;
     }
 
-    public String getSummary_short() {
-        return summary_short;
-    }
-
-    public void setSummary_short(String summary_short) {
-        this.summary_short = summary_short;
-    }
-
-    public String getSuggested_link_text() {
-        return suggested_link_text;
-    }
-
-    public void setSuggested_link_text(String suggested_link_text) {
-        this.suggested_link_text = suggested_link_text;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getReviewReference() {
-        return reviewReference;
+        return review_reference;
     }
 
     public void setReviewReference(String reviewReference) {
-        this.reviewReference = reviewReference;
+        this.review_reference = reviewReference;
     }
 }

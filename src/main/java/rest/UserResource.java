@@ -166,7 +166,7 @@ public class UserResource {
 
             for (Movie movie : movies) {
                 List<Future> innerfutures = new ArrayList<>();
-                Future<MovieDTOFromOMDB> futureMovieDTO = fetcher.getMovie(movie.getTitle(), movie.getYear());
+                Future<MovieDTO> futureMovieDTO = fetcher.getMovie(movie.getTitle(), movie.getYear(), movie.getId());
                 Future<ReviewDTO> futureReviewDTO = fetcher.getReview(movie.getTitle(), movie.getYear());
                 innerfutures.add(futureMovieDTO);
                 innerfutures.add(futureReviewDTO);
@@ -174,10 +174,12 @@ public class UserResource {
             }
 
             for (List<Future> future : futures) {
-                MovieDTOFromOMDB movieDTOFromOMDB = (MovieDTOFromOMDB) future.get(0).get();
+                MovieDTO movieDTO = (MovieDTO) future.get(0).get();
                 ReviewDTO reviewDTO = (ReviewDTO) future.get(1).get();
-                movieAndReviewDTOs.add(new MovieReviewCombinedDTO(movieDTOFromOMDB, reviewDTO));
+                movieAndReviewDTOs.add(new MovieReviewCombinedDTO(movieDTO, reviewDTO));
             }
+
+
 
         } catch (EntityNotFoundException e) {
             throw new NotFoundException("No such user with id " + id + " exist");
