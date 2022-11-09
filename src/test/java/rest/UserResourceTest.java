@@ -3,6 +3,7 @@ package rest;
 import dtos.MovieDTO;
 import dtos.MovieDTOFromOMDB;
 import dtos.UserDTO;
+import entities.Movie;
 import entities.User;
 import entities.UserMovie;
 import io.restassured.http.ContentType;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserResourceTest extends ResourceTestEnvironment {
 
@@ -116,5 +118,47 @@ public class UserResourceTest extends ResourceTestEnvironment {
 //        user = (User) getRefreshedEntity(user);
 //        UserMovie userMovie = user.getUserMovies().get(0);
 //        assertDatabaseHasEntity(userMovie,userMovie.getId());
+    }
+
+    @Test
+    void addMovieThatAlreadyExistsTest() {
+        Movie movie = createAndPersistMovie();
+        MovieDTO movieDTO = new MovieDTO(movie.getTitle(), movie.getYear());
+
+        User user = createAndPersistUser();
+
+        int expectedId = movie.getId();
+        int actualId = given()
+                .header("Content-type", ContentType.JSON)
+                .and()
+                .body(GSON.toJson(movieDTO))
+                .when()
+                .put(BASE_URL+user.getId()+"/movies")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .contentType(ContentType.JSON)
+                .body("movies",hasSize(1))
+                .extract().path("movies.id[0]");
+
+        assertEquals(expectedId,actualId);
+    }
+
+    @Test
+    void removeMovieFromUserTest() {
+        User user = createAndPersistUser();
+        Movie movie = createAndPersistMovie();
+        user.addMovie(movie);
+        update(user);
+
+        given()
+            .header("Content-type", ContentType.JSON)
+            .when()
+            .put(BASE_URL+user.getId()+"/movies/"+movie.getId())
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.OK_200.getStatusCode())
+            .contentType(ContentType.JSON)
+            .body("movies", hasSize(0));
     }
 }

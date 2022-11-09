@@ -137,6 +137,9 @@ public class User implements Serializable, entities.Entity{
   public void addMovie(Movie movie) {
     movies.add(movie);
   }
+  public void removeMovie(Movie movie) {
+    movies.remove(movie);
+  }
 
   public List<UserMovie> getUserMovies() {
     return userMovies;

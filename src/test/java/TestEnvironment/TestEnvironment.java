@@ -46,11 +46,23 @@ public class TestEnvironment {
     }
 
 
-    private Entity persist(Entity entity) {
+    protected Entity persist(Entity entity) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(entity);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+        return entity;
+    }
+
+    protected Entity update(Entity entity) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(entity);
             em.getTransaction().commit();
         } finally {
             em.close();

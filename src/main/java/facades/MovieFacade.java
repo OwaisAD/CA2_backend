@@ -70,5 +70,20 @@ public class MovieFacade {
         }
         return movie;
     }
+
+    public Movie getMovieById(int id) {
+        EntityManager em = emf.createEntityManager();
+        Movie movie;
+        try {
+            em.getTransaction().begin();
+            movie = em.find(Movie.class, id);
+            em.getTransaction().commit();
+        } catch (NoResultException e) {
+            return null;
+        } finally {
+            em.close();
+        }
+        return movie;
+    }
 }
 

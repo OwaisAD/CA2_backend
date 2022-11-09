@@ -56,7 +56,7 @@ public class UserResource {
     @Path("{id}/movies")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response updateUser(@PathParam("id") int id, String movieFromJson) {
+    public Response addMovieToUser(@PathParam("id") int id, String movieFromJson) {
         MovieDTO movieDTO = GSON.fromJson(movieFromJson, MovieDTO.class);
         User user;
 
@@ -69,6 +69,30 @@ public class UserResource {
             }
 
             user.addMovie(movie);
+            facade.updateUser(user);
+        } catch (EntityNotFoundException e) {
+            throw new NotFoundException("No such user with id " + id + " exist");
+        }
+
+        UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getAge(),
+                user.getRolesAsStrings(), user.getMovies());
+
+        String userToJson = GSON.toJson(userDTO);
+
+        return Response.status(HttpStatus.OK_200.getStatusCode()).entity(userToJson).build();
+    }
+
+    @PUT
+    @Path("{id}/movies/{movieId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response removeMovieFromUser(@PathParam("id") int id, @PathParam("movieId") int movieId) {
+        User user;
+
+        try {
+            Movie movie = movieFacade.getMovieById(movieId);
+            user = facade.getUserById(id);
+
+            user.removeMovie(movie);
             facade.updateUser(user);
         } catch (EntityNotFoundException e) {
             throw new NotFoundException("No such user with id " + id + " exist");

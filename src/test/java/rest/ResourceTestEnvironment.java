@@ -60,8 +60,9 @@ public class ResourceTestEnvironment extends TestEnvironment {
         return new UserDTO(user);
     }
 
+
     protected MovieDTO createMovieDTO() {
         Movie movie = createMovie();
-        return new MovieDTO(movie);
+        return new MovieDTO(movie.getTitle(), movie.getYear());
     }
 }

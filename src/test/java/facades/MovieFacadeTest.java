@@ -52,4 +52,20 @@ public class MovieFacadeTest extends TestEnvironment {
 
         assertNull(actual);
     }
+
+    @Test
+    void getMovieByIdTest() {
+        Movie expected = createAndPersistMovie();
+
+        Movie actual = facade.getMovieById(expected.getId());
+
+        assertEquals(expected.getId(),actual.getId());
+    }
+
+    @Test
+    void getNonExistingMovieByIdTest() {
+        Movie actual = facade.getMovieById(nonExistingId);
+
+        assertNull(actual);
+    }
 }
