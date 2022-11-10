@@ -38,11 +38,11 @@ CREATE TABLE IF NOT EXISTS `ca2`.`roles` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ca2`.`users` (
                                              `id` INT NOT NULL AUTO_INCREMENT,
-                                             `name` VARCHAR(45) NOT NULL,
+                                             `username` VARCHAR(45) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `age` INT NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
+    UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE)
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 

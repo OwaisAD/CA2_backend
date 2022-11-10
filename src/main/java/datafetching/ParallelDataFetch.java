@@ -8,6 +8,7 @@ import dtos.MovieDTO;
 import dtos.MovieDTOFromOMDB;
 import dtos.MovieReviewCombinedDTO;
 import dtos.ReviewDTO;
+import io.github.cdimascio.dotenv.Dotenv;
 import utils.HttpUtils;
 
 import java.util.concurrent.ExecutionException;
@@ -16,8 +17,9 @@ import java.util.concurrent.Future;
 
 public class ParallelDataFetch {
 
-    static String API_KEY_OMDB = "52e5ff12";
-    static String API_KEY_NY = "5QjomAGUzfEYR3EdFfcVYCuHAYLAG0FK";
+    static Dotenv dotenv = Dotenv.load();
+    static String API_KEY_OMDB = dotenv.get("API_KEY_OMDB");
+    static String API_KEY_NY = dotenv.get("API_KEY_NY");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     //using threads based on: https://www.baeldung.com/java-future
