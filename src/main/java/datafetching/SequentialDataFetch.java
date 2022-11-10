@@ -5,6 +5,7 @@ import dtos.MovieDTO;
 import dtos.MovieDTOFromOMDB;
 import dtos.MovieReviewCombinedDTO;
 import dtos.ReviewDTO;
+import io.github.cdimascio.dotenv.Dotenv;
 import utils.HttpUtils;
 
 import java.io.IOException;
@@ -14,9 +15,10 @@ public class SequentialDataFetch {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    static String API_KEY_OMDB = "52e5ff12";
+    static String API_KEY_NY = "98swTXWdB1GNFrsuJDTMqHV4uBU4wzul";
+
     public static MovieReviewCombinedDTO runSequential(String movieName) throws IOException, InterruptedException {
-        String API_KEY_OMDB = "52e5ff12";
-        String API_KEY_NY = "5QjomAGUzfEYR3EdFfcVYCuHAYLAG0FK";
 
         // get movie data
         String movieJSON = HttpUtils.fetchData("https://www.omdbapi.com/?apikey=" + API_KEY_OMDB +"&t=" + movieName);
@@ -31,7 +33,6 @@ public class SequentialDataFetch {
         String reviewJSON = HttpUtils.fetchData("https://api.nytimes.com/svc/movies/v2/reviews/search.json?query=" + movieName + "&opening-date=" + openingYear + "-01-01:" + openingYearPlusOne + "-01-01&api-key=" + API_KEY_NY);
         JsonObject reviewJSON2 = GSON.fromJson(reviewJSON, JsonObject.class);
         JsonArray jsonArray = reviewJSON2.getAsJsonArray("results");
-
 
         JsonObject propertiesJson = (JsonObject) jsonArray.get(0);
         String summary_short = propertiesJson.get("summary_short").getAsString();
