@@ -29,16 +29,11 @@ public class LoginResource {
     @Context
     SecurityContext securityContext;
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getInfoForAll() {
-        return "{\"msg\":\"Hello anonymous\"}";
-    }
-
     //Just to verify if the database is setup
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("all")
+    @RolesAllowed("admin")
     public String allUsers() {
 
         EntityManager em = EMF.createEntityManager();
@@ -57,10 +52,6 @@ public class LoginResource {
     @RolesAllowed("user")
     public String getFromUser() {
         int id = Integer.parseInt(securityContext.getUserPrincipal().getName());
-        //int id = securityContext.getUserPrincipal()
-        System.out.println(id);
-
-
         return "{\"msg\": \"Hello to User: " + id + "\"}";
     }
 
@@ -69,8 +60,8 @@ public class LoginResource {
     @Path("admin")
     @RolesAllowed("admin")
     public String getFromAdmin() {
-        String thisuser = securityContext.getUserPrincipal().getName();
-        return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
+        int id = Integer.parseInt(securityContext.getUserPrincipal().getName());
+        return "{\"msg\": \"Hello to (admin) User: " + id + "\"}";
     }
 
 
