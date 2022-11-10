@@ -43,7 +43,7 @@ public class LoginEndpoint {
         String password;
         try {
             JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
-            username = json.get("username").getAsString();
+            username = json.get("name").getAsString();
             password = json.get("password").getAsString();
         } catch (Exception e) {
            throw new API_Exception("Malformed JSON Suplied",400,e);
@@ -51,6 +51,7 @@ public class LoginEndpoint {
 
         try {
             User user = USER_FACADE.getVerifiedUser(username, password);
+            System.out.println(user);
             String token = createToken(user.getId(), username, user.getRolesAsStringList());
             JsonObject responseJson = new JsonObject();
             responseJson.addProperty("username", username);
@@ -77,7 +78,7 @@ public class LoginEndpoint {
         Date date = new Date();
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .subject(String.valueOf(userId))
-                .claim("username", userName)
+                .claim("name", userName)
                 .claim("roles", rolesAsString)
                 .claim("issuer", issuer)
                 .issueTime(date)
