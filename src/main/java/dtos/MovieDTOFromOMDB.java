@@ -9,14 +9,18 @@ public class MovieDTOFromOMDB {
     private String Runtime;
     private String Genre;
     private String Poster;
+    private String Plot;
+    private String Actors;
 
-    public MovieDTOFromOMDB(String title, String year, String released, String runtime, String genre, String poster) {
+    public MovieDTOFromOMDB(String title, String year, String released, String runtime, String genre, String poster, String plot, String actors) {
         this.Title = title;
-        Year = year;
-        Released = released;
-        Runtime = runtime;
-        Genre = genre;
-        Poster = poster;
+        this.Year = year;
+        this.Released = released;
+        this.Runtime = runtime;
+        this.Genre = genre;
+        this.Poster = poster;
+        this.Plot = plot;
+        this.Actors = actors;
     }
 
     public String getTitle() {
@@ -67,4 +71,19 @@ public class MovieDTOFromOMDB {
         Poster = poster;
     }
 
+    public String getPlot() {
+        return Plot;
+    }
+
+    public void setPlot(String plot) {
+        Plot = plot;
+    }
+
+    public String getActors() {
+        return Actors;
+    }
+
+    public void setActors(String actors) {
+        Actors = actors;
+    }
 }

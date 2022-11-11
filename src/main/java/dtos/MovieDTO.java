@@ -12,6 +12,9 @@ public class MovieDTO {
     private String runtime;
     private String genre;
     private String poster;
+
+    private String plot;
+    private String actors;
     private String data_reference;
 
     public MovieDTO(Movie movie) {
@@ -32,6 +35,8 @@ public class MovieDTO {
         this.runtime = movieDTOFromOMDB.getRuntime();
         this.genre = movieDTOFromOMDB.getGenre();
         this.poster = movieDTOFromOMDB.getPoster();
+        this.plot = movieDTOFromOMDB.getPlot();
+        this.actors = movieDTOFromOMDB.getActors();
     }
 
     public Integer getId() {
@@ -88,6 +93,14 @@ public class MovieDTO {
 
     public void setPoster(String poster) {
         this.poster = poster;
+    }
+
+    public String getPlot() {
+        return plot;
+    }
+
+    public void setPlot(String plot) {
+        this.plot = plot;
     }
 
     public String getDataReference() {
