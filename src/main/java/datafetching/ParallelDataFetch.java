@@ -17,13 +17,9 @@ import java.util.concurrent.Future;
 
 public class ParallelDataFetch {
 
-    static Dotenv dotenv = Dotenv.load();
-    static String API_KEY_OMDB = dotenv.get("API_KEY_OMDB");
-    static String API_KEY_NY = dotenv.get("API_KEY_NY");
+    static String API_KEY_OMDB = "52e5ff12";
+    static String API_KEY_NY = "98swTXWdB1GNFrsuJDTMqHV4uBU4wzul";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-    //using threads based on: https://www.baeldung.com/java-future
-
     protected static ExecutorService executorService;
     public ParallelDataFetch(ExecutorService executorService) {
         this.executorService = executorService;

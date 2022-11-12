@@ -184,8 +184,6 @@ public class UserResource {
                 movieAndReviewDTOs.add(new MovieReviewCombinedDTO(movieDTO, reviewDTO));
             }
 
-
-
         } catch (EntityNotFoundException e) {
             throw new NotFoundException("No such user with id " + id + " exist");
         } catch (ExecutionException e) {

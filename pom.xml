@@ -104,8 +104,8 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>4.3.1</version>
-            <scope>test</scope>
+            <version>5.2.0</version>
+            <scope>scope</scope>
         </dependency>
         
         <!-- Security Dependencies (jwt-support) -->
