@@ -105,4 +105,20 @@ public class UserFacade {
         }
         return user;
     }
+
+    public boolean checkIfUserAlreadyHasMovie(int userId, int movieId) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Query query = em.createQuery("SELECT count(um) FROM UserMovie um WHERE um.movie.id=:movieid AND um.user.id=:userid");
+            query.setParameter("movieid", movieId);
+            query.setParameter("userid", userId);
+            long sameMovieCount = (long) query.getSingleResult();
+            if(sameMovieCount > 0) {
+                return true;
+            }
+            return false;
+        } finally {
+            em.close();
+        }
+    }
 }

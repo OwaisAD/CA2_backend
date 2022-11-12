@@ -78,9 +78,14 @@ public class UserResource {
 
             if (movie == null) {
                 movie = movieFacade.createMovie(new Movie(movieDTO.getTitle(), movieDTO.getYear()));
+                user.addMovie(movie);
+            } else {
+                // check if user already has the movie
+                boolean userAlreadyHasMovie = facade.checkIfUserAlreadyHasMovie(user.getId(), movie.getId());
+                if(!userAlreadyHasMovie) {
+                    user.addMovie(movie);
+                }
             }
-
-            user.addMovie(movie);
             facade.updateUser(user);
         } catch (EntityNotFoundException e) {
             throw new NotFoundException("No such user with id " + id + " exist");
