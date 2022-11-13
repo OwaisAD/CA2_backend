@@ -1,14 +1,37 @@
 # Endpoints
 
+- Login (format: {"username": X, "password":X})
 
-/api/movie/seq/{name}
-/api/movie/par/{name}
+```
+POST /api/login
+```
+
+- Create user (format: {"username": X, "password": X, "age": X})
+```
+POST /api/users
+```
+
+- Get user watchlist (required String x-access-token)
+```
+GET /api/users/me/movies
+```
 
 
-## Get started
-[How to use](https://docs.google.com/document/d/1rymrRWF3VVR7ujo3k3sSGD_27q73meGeiMYtmUtYt6c/edit)
+- Add to user watchlist (required String x-access-token)
+```
+POST /api/users/me/movies
+```
 
 
+- Remove from user watchlist (required String x-access-token)
+```
+DELETE /api/users/me/movies/{movieId}
+```
+
+- Search for a movie
+```
+GET /api/movie/{movieTitle}
+```
 
 <hr />
 
