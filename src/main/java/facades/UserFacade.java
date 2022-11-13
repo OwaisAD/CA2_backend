@@ -3,10 +3,16 @@ package facades;
 import entities.User;
 
 import javax.persistence.*;
+import javax.ws.rs.BadRequestException;
 
 import errorhandling.IllegalAgeException;
 import errorhandling.InvalidUsernameException;
+import errorhandling.MissingDataException;
+import errorhandling.UsernameAlreadyExists;
+import org.eclipse.persistence.exceptions.DatabaseException;
 import security.errorhandling.AuthenticationException;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
  * @author lam@cphbusiness.dk
@@ -59,21 +65,28 @@ public class UserFacade {
         return user;
     }
 
-    public User createUser(User user) throws IllegalAgeException, InvalidUsernameException {
+    public User createUser(User user) throws IllegalAgeException, InvalidUsernameException, MissingDataException {
         EntityManager em = emf.createEntityManager();
 
-        if(user.getAge() < MINIMUM_AGE || user.getAge() > MAXIMUM_AGE) {
-            throw new IllegalAgeException(user.getAge());
-        }
+        String errorMsg = "";
 
         if(user.getUsername() == null || user.getUsername().equals("")) {
-            throw new InvalidUsernameException("Username cannot be null or an empty string");
+            throw new InvalidUsernameException("Username cannot be null or an empty string.");
         }
 
         if(user.getUsername().length() < MINIMUM_USERNAME_LENGTH || user.getUsername().length() > MAXIMUM_USERNAME_LENGTH) {
-            throw new InvalidUsernameException("Username length should be between " + MINIMUM_USERNAME_LENGTH + " and " +
-                    + MAXIMUM_USERNAME_LENGTH+ " characters");
+            errorMsg += "Username length should be between " + MINIMUM_USERNAME_LENGTH + " and " +
+                    + MAXIMUM_USERNAME_LENGTH+ " characters. ";
         }
+
+        if(user.getAge() < MINIMUM_AGE || user.getAge() > MAXIMUM_AGE) {
+            errorMsg += "Age should be between 13 and 120";
+        }
+
+        if(!errorMsg.equals("")) {
+            throw new MissingDataException(errorMsg);
+        }
+
 
         try {
             em.getTransaction().begin();
@@ -117,6 +130,21 @@ public class UserFacade {
                 return true;
             }
             return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    public void checkIfUserAlreadyExist(String username) throws UsernameAlreadyExists {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            Query query = em.createQuery("SELECT count(u) FROM User u WHERE u.username=:username");
+            query.setParameter("username", username);
+            long userCount = (long) query.getSingleResult();
+            if(userCount > 0) {
+                throw new UsernameAlreadyExists();
+            }
         } finally {
             em.close();
         }

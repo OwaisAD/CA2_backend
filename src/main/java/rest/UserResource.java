@@ -6,9 +6,7 @@ import datafetching.ParallelDataFetch;
 import dtos.*;
 import entities.Movie;
 import entities.User;
-import errorhandling.IllegalAgeException;
-import errorhandling.InvalidPasswordException;
-import errorhandling.InvalidUsernameException;
+import errorhandling.*;
 import facades.MovieFacade;
 import facades.RoleFacade;
 import facades.UserFacade;
@@ -19,7 +17,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.*;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.*;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,10 +50,12 @@ public class UserResource {
         User user;
 
         try {
+            facade.checkIfUserAlreadyExist(userDTO.getUsername());
             user = new User(userDTO.getUsername(), userDTO.getPassword(), userDTO.getAge());
             user.addRole(roleFacade.getRoleByRole("user"));
             user = facade.createUser(user);
-        } catch (InvalidUsernameException | InvalidPasswordException | IllegalAgeException e) {
+        } catch (InvalidUsernameException | InvalidPasswordException | IllegalAgeException | MissingDataException |
+                 UsernameAlreadyExists e) {
             throw new BadRequestException(e.getMessage());
         }
 

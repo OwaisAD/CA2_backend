@@ -76,6 +76,7 @@ public class User implements Serializable, entities.Entity{
       if(password.length() < MINIMUM_PASSWORD_LENGTH) {
         throw new InvalidPasswordException("Password is too short");
       }
+
       return BCrypt.hashpw(password, BCrypt.gensalt());
   }
 

@@ -11,6 +11,7 @@ import entities.User;
 import errorhandling.IllegalAgeException;
 import errorhandling.InvalidPasswordException;
 import errorhandling.InvalidUsernameException;
+import errorhandling.MissingDataException;
 import utils.EMF_Creator;
 
 /**
@@ -18,7 +19,7 @@ import utils.EMF_Creator;
  * @author tha
  */
 public class Populator {
-    public static void populate() throws InvalidPasswordException, InvalidUsernameException, IllegalAgeException {
+    public static void populate() throws InvalidPasswordException, InvalidUsernameException, IllegalAgeException, MissingDataException {
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
         UserFacade userFacade = UserFacade.getFacade(emf);
         userFacade.createUser(new User("owais","1234",26));
@@ -27,7 +28,7 @@ public class Populator {
         userFacade.createUser(new User("thomas","1234",36));
     }
     
-    public static void main(String[] args) throws InvalidPasswordException, InvalidUsernameException, IllegalAgeException {
+    public static void main(String[] args) throws InvalidPasswordException, InvalidUsernameException, IllegalAgeException, MissingDataException {
         populate();
     }
 }

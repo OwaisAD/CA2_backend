@@ -7,6 +7,7 @@ import entities.UserMovie;
 import errorhandling.IllegalAgeException;
 import errorhandling.InvalidUsernameException;
 
+import errorhandling.MissingDataException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -45,14 +46,14 @@ public class UserFacadeTest extends TestEnvironment {
     public void createUserWithAgeBelowMinimumTest() {
         User user = createUser();
         user.setAge(12);
-        assertThrows(IllegalAgeException.class, () -> facade.createUser(user));
+        assertThrows(MissingDataException.class, () -> facade.createUser(user));
     }
 
     @Test
     public void createUserWithAgeAboveMaximumTest() {
         User user = createUser();
         user.setAge(121);
-        assertThrows(IllegalAgeException.class, () -> facade.createUser(user));
+        assertThrows(MissingDataException.class, () -> facade.createUser(user));
     }
 
     @Test
@@ -87,14 +88,14 @@ public class UserFacadeTest extends TestEnvironment {
     public void createUserWithUsernameLengthBelowMinimumLengthTest() {
         User user = createUser();
         user.setUsername(faker.letterify("??")); //two random characters
-        assertThrows(InvalidUsernameException.class, () -> facade.createUser(user));
+        assertThrows(MissingDataException.class, () -> facade.createUser(user));
     }
 
     @Test
     public void createUserWithUsernameLengthAboveMaximumLengthTest() {
         User user = createUser();
         user.setUsername(faker.letterify("?????????????????????"));
-        assertThrows(InvalidUsernameException.class, () -> facade.createUser(user));
+        assertThrows(MissingDataException.class, () -> facade.createUser(user));
     }
 
     @Test
