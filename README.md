@@ -1,21 +1,22 @@
-
-// TODO - INSTRUCTIONS
+# Endpoints
 
 
 /api/movie/seq/{name}
 /api/movie/par/{name}
 
 
+## Get started
+[How to use](https://docs.google.com/document/d/1rymrRWF3VVR7ujo3k3sSGD_27q73meGeiMYtmUtYt6c/edit)
 
----
+
+
+<hr />
 
 *Projects which are expected to use this start-code are projects that require all, or most of the following technologies:*
  - *JPA and REST*
 - *Testing, including database test*
 - *Testing, including tests of REST-API's*
 - *CI and CONTINUOUS DELIVERY*
-
-## Flow 2 week 1
 
 ### Preconditions
 *In order to use this code, you should have a local developer setup + a "matching" droplet on Digital Ocean as described in the 3. semester guidelines* 
